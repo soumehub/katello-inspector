@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+dist/
+*.egg-info/
+raw/
+*/raw/
+*.token
+config.ini
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
