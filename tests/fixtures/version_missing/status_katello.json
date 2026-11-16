@@ -1,0 +1,7 @@
+{
+  "request": {"method": "GET", "path": "/katello/api/status", "params": {}},
+  "status": 200,
+  "kind": "ok",
+  "elapsed_ms": 35,
+  "response": {"result": "ok", "version": null}
+}

@@ -1,0 +1,7 @@
+{
+  "request": {"method": "GET", "path": "/api/status", "params": {}},
+  "status": 200,
+  "kind": "ok",
+  "elapsed_ms": 42,
+  "response": {"result": "ok", "status": "ok", "version": "3.19.1", "api_version": 2}
+}
