@@ -271,7 +271,13 @@ class ApiClient(BaseApiClient):
 
 
 def _fixture_key(path: str, params: Mapping[str, Any]) -> tuple[str, tuple[tuple[str, str], ...]]:
-    normalized = tuple(sorted((str(k), str(v)) for k, v in params.items()))
+    # page=1 et page absent sont equivalents (Foreman applique ce defaut) :
+    # certaines captures reelles omettent "page" sur un premier appel, et le
+    # code appelant le precise toujours. Sans cette equivalence, les deux
+    # conventions ne se retrouveraient jamais pour le meme appel reel.
+    normalized = tuple(
+        sorted((str(k), str(v)) for k, v in params.items() if not (k == "page" and str(v) == "1"))
+    )
     return path, normalized
 
 
