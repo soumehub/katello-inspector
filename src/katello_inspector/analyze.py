@@ -72,8 +72,10 @@ def compute_checkin_indicator(host: Host, config: config_mod.Config, *, now: dt.
     if not host.has_content:
         return Indicator(NA)
     if host.last_checkin is None:
-        return Indicator(UNKNOWN, "date de dernier check-in absente")
+        return Indicator(UNKNOWN, "date de dernier check-in absente ou invalide")
     age_days = (_now(now) - host.last_checkin).days
+    if age_days < 0:
+        return Indicator(UNKNOWN, f"date de dernier check-in dans le futur ({host.last_checkin.isoformat()})")
     threshold = config_mod.threshold_for(config, "checkin_days")
     if age_days > threshold:
         return Indicator(CRIT, f"dernier check-in il y a {age_days} jours (seuil {threshold})")
@@ -100,6 +102,8 @@ def compute_errata_security_indicator(host: Host, config: config_mod.Config) -> 
 
 
 def compute_traces_indicator(host: Host) -> Indicator:
+    if not host.has_content:
+        return Indicator(NA)
     if host.build:
         return Indicator(NA)
     if host.traces_status is None:
@@ -216,23 +220,42 @@ def aggregate_status(indicators: HostIndicators) -> str:
     return min(non_na, key=lambda s: _SEVERITY_ORDER[s])
 
 
+_ERRATA_TYPES = ("security", "bugfix", "enhancement")
+
+
+def compute_applicable_not_installable(host: Host) -> dict[str, int]:
+    """Detail par type (securite/bugfix/enhancement) : applicable moins installable.
+
+    Erratum applicable mais present seulement dans du contenu que la VM ne
+    voit pas encore (version publiee non promue, ou contenu non publie).
+    """
+    installable = host.errata_installable or {}
+    applicable = host.errata_applicable or {}
+    return {t: (applicable.get(t) or 0) - (installable.get(t) or 0) for t in _ERRATA_TYPES}
+
+
 def compute_update_state(host: Host, indicators: HostIndicators) -> str:
     if not host.has_content:
         return UPDATE_STATE_NA
+    if host.build:
+        # Les compteurs ne sont pas fiables pendant un build (errata_security
+        # et traces sont d'ailleurs N/A pour cette raison) : on ne conclut
+        # jamais outdated/pending/up_to_date sur des donnees potentiellement
+        # obsoletes.
+        return UPDATE_STATE_UNVERIFIABLE
 
     errata_unknown = host.errata_installable is None or host.errata_installable.get("security") is None
     if indicators.checkin.status in (CRIT, UNKNOWN) or errata_unknown:
         return UPDATE_STATE_UNVERIFIABLE
 
     installable = host.errata_installable or {}
-    installable_total = sum(installable.get(k, 0) or 0 for k in ("security", "bugfix", "enhancement"))
+    installable_total = sum(installable.get(k, 0) or 0 for k in _ERRATA_TYPES)
     if installable_total > 0:
         return UPDATE_STATE_OUTDATED
 
-    applicable = host.errata_applicable or {}
-    applicable_not_installable = (applicable.get("security") or 0) - (installable.get("security") or 0)
+    applicable_not_installable_total = sum(compute_applicable_not_installable(host).values())
     cv_waiting = any((r.waiting_days or 0) > 0 for r in indicators.cv_lag_pairs if r.status != NA)
-    if applicable_not_installable > 0 or cv_waiting:
+    if applicable_not_installable_total > 0 or cv_waiting:
         return UPDATE_STATE_CONTENT_PENDING
 
     return UPDATE_STATE_UP_TO_DATE
@@ -356,6 +379,7 @@ class LceSummary:
     status_counts: dict[str, int]
     update_state_counts: dict[str, int]
     security_installable_total: int
+    security_critical_total: None
     stale_data_vms: int
     in_build: int
     max_cv_waiting_days: int
@@ -363,11 +387,14 @@ class LceSummary:
 
 
 def compute_by_lce(evaluated_hosts: list[EvaluatedHost], environment_order: list[str]) -> list[LceSummary]:
+    # Ordre de promotion d'abord (environment_order, tel que fourni par
+    # order_environments_by_promotion) ; tout environnement non rattache a
+    # cette liste (cas non observe) vient apres, par ordre alphabetique,
+    # jamais dans l'ordre de rencontre (non deterministe, les environnements
+    # d'un hote sont stockes dans un frozenset).
     names = list(environment_order)
-    for eh in evaluated_hosts:
-        for name in eh.environments:
-            if name not in names:
-                names.append(name)
+    extra = sorted({name for eh in evaluated_hosts for name in eh.environments} - set(names))
+    names.extend(extra)
 
     summaries: list[LceSummary] = []
     for name in names:
@@ -406,6 +433,10 @@ def compute_by_lce(evaluated_hosts: list[EvaluatedHost], environment_order: list
                 status_counts=status_counts,
                 update_state_counts=update_state_counts,
                 security_installable_total=security_installable_total,
+                # Toujours null : la severite par erratum vient de l'endpoint
+                # par hote (/api/hosts/:id/errata), hors de summary (pas
+                # d'appel par VM) ; voir docs/cadrage.md.
+                security_critical_total=None,
                 stale_data_vms=stale_data_vms,
                 in_build=in_build,
                 max_cv_waiting_days=max_waiting,

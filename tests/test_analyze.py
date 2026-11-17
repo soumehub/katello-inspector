@@ -115,6 +115,34 @@ def test_checkin_one_day_beyond_threshold_is_crit() -> None:
     assert compute_checkin_indicator(host, _config(), now=NOW).status == CRIT
 
 
+def test_checkin_in_the_future_is_unknown() -> None:
+    raw = _raw_host(0)
+    raw["subscription_facet_attributes"]["last_checkin"] = "2026-11-18 12:00:00 UTC"  # apres `now`
+    host = host_from_api(raw)
+    indicator = compute_checkin_indicator(host, _config(), now=NOW)
+    assert indicator.status == UNKNOWN
+    assert indicator.reason
+
+
+def test_checkin_malformed_date_is_unknown() -> None:
+    raw = _raw_host(0)
+    raw["subscription_facet_attributes"]["last_checkin"] = "pas une date valide"
+    host = host_from_api(raw)
+    indicator = compute_checkin_indicator(host, _config(), now=NOW)
+    assert indicator.status == UNKNOWN
+
+
+def test_checkin_default_now_uses_current_time_without_crashing() -> None:
+    # L'horloge est injectee explicitement dans tous les autres tests ; ici
+    # on verifie seulement que l'absence d'injection (now=None) fonctionne
+    # avec l'heure reelle, sur une date tres ancienne (CRIT quel que soit le
+    # jour ou le test tourne).
+    raw = _raw_host(0)
+    raw["subscription_facet_attributes"]["last_checkin"] = "2000-01-01 00:00:00 UTC"
+    host = host_from_api(raw)
+    assert compute_checkin_indicator(host, _config()).status == CRIT
+
+
 # --------------------------------------------------------------------------
 # compute_errata_security_indicator
 # --------------------------------------------------------------------------
@@ -175,6 +203,11 @@ def test_errata_security_at_crit_threshold() -> None:
 # --------------------------------------------------------------------------
 # compute_traces_indicator
 # --------------------------------------------------------------------------
+
+
+def test_traces_no_content_is_na() -> None:
+    host = _host_without_content()
+    assert compute_traces_indicator(host).status == NA
 
 
 def test_traces_in_build_is_na() -> None:
@@ -286,6 +319,14 @@ def test_cv_lag_deployed_version_not_in_version_list_is_unknown() -> None:
     assert result.status == UNKNOWN
 
 
+def test_cv_lag_deployed_version_without_publish_date_is_unknown() -> None:
+    deployed = _version(24, None, frozenset({3}))
+    pair = _pair()
+    result = compute_cv_lag_for_pair(pair, {3: [deployed]}, _config(), now=NOW)
+    assert result.status == UNKNOWN
+    assert result.reason
+
+
 def test_cv_lag_no_newer_version_is_ok_zero_waiting() -> None:
     deployed = _version(24, NOW - dt.timedelta(days=30), frozenset({3}))
     pair = _pair()
@@ -384,11 +425,10 @@ def test_aggregate_status_unknown_when_no_warn_or_crit() -> None:
 
 
 def test_aggregate_status_na_when_no_content() -> None:
-    # traces_status n'est pas lie au contenu (cadrage : N/A seulement en
-    # build) ; sur cet hote sans contenu, traces_status est lui-meme absent
-    # (UNKNOWN). Pour un statut global N/A il faut que les quatre
-    # indicateurs le soient, donc aussi traces : on force le build.
-    host = _host_without_content(build=True)
+    # traces est aussi N/A sans donnees de contenu (comme les trois autres
+    # indicateurs pertinents) : les quatre sont N/A, le statut global l'est
+    # donc aussi.
+    host = _host_without_content()
     indicators = compute_host_indicators(host, {}, _config(), now=NOW)
     assert aggregate_status(indicators) == NA
 
@@ -524,20 +564,65 @@ def test_update_state_fully_up_to_date() -> None:
     assert compute_update_state(host, indicators) == UPDATE_STATE_UP_TO_DATE
 
 
-def test_update_state_in_build_uses_raw_errata_counts() -> None:
-    # Point a confirmer : le statut affiche de l'indicateur errata_security
-    # passe en N/A pendant un build, mais compute_update_state continue a
-    # lire les compteurs bruts (quand l'API les fournit encore) pour decider
-    # outdated/pending/up_to_date. Comportement a valider sur une instance
-    # reelle en build.
+# --------------------------------------------------------------------------
+# Priorites de compute_update_state (ordre des regles)
+# --------------------------------------------------------------------------
+
+
+def test_update_state_priority_checkin_crit_wins_over_outdated() -> None:
+    # Check-in CRIT et des errata installables en meme temps : unverifiable
+    # l'emporte (on ne peut pas se fier aux donnees d'un hote qui n'a pas
+    # fait de check-in recent, meme si elles semblent indiquer "outdated").
+    raw = _raw_host(0)
+    raw["subscription_facet_attributes"]["last_checkin"] = "2026-11-09 12:00:00 UTC"  # CRIT
+    raw["content_facet_attributes"]["errata_counts"]["security"] = 5
+    host = host_from_api(raw)
+    indicators = compute_host_indicators(host, {}, _config(), now=NOW)
+    assert compute_update_state(host, indicators) == UPDATE_STATE_UNVERIFIABLE
+
+
+def test_update_state_priority_outdated_wins_over_content_pending() -> None:
+    # Au moins un erratum installable ET du contenu en attente (CV) en meme
+    # temps : outdated l'emporte (installable est plus grave que "en
+    # attente de promotion").
     raw = _raw_host(0)
     raw["subscription_facet_attributes"]["last_checkin"] = "2026-11-17 11:00:00 UTC"
     raw["content_facet_attributes"]["errata_counts"]["security"] = 1
+    host = host_from_api(raw)
+    deployed = _version(24, NOW - dt.timedelta(days=30), frozenset({3}))
+    newer = _version(25, NOW - dt.timedelta(days=5), frozenset())
+    indicators = compute_host_indicators(host, {3: [deployed, newer]}, _config(), now=NOW)
+    assert compute_update_state(host, indicators) == UPDATE_STATE_OUTDATED
+
+
+def test_update_state_priority_na_before_everything_else() -> None:
+    # Sans donnees de contenu, n/a l'emporte meme si le reste des champs
+    # bruts (check-in, etc.) semble en bon etat.
+    raw = _raw_host(0)
+    raw["subscription_facet_attributes"]["last_checkin"] = "2026-11-17 11:00:00 UTC"
+    raw["content_facet_attributes"] = None
+    host = host_from_api(raw)
+    indicators = compute_host_indicators(host, {}, _config(), now=NOW)
+    assert compute_update_state(host, indicators) == UPDATE_STATE_NA
+
+
+def test_update_state_in_build_is_always_unverifiable() -> None:
+    # Pendant un build, les compteurs ne sont pas fiables (c'est pour ca que
+    # errata_security et traces sont N/A) : update_state ne conclut jamais
+    # outdated/pending/up_to_date sur ces donnees, meme si le check-in est
+    # bon et les compteurs installables a zero.
+    raw = _raw_host(0)
+    raw["subscription_facet_attributes"]["last_checkin"] = "2026-11-17 11:00:00 UTC"
+    raw["content_facet_attributes"]["errata_counts"]["security"] = 0
+    raw["content_facet_attributes"]["errata_counts"]["bugfix"] = 0
+    raw["content_facet_attributes"]["errata_counts"]["applicable"]["security"] = 0
+    raw["content_facet_attributes"]["content_view_environments"] = []
     raw["build"] = True
     host = host_from_api(raw)
     indicators = compute_host_indicators(host, {}, _config(), now=NOW)
     assert indicators.errata_security.status == NA
-    assert compute_update_state(host, indicators) == UPDATE_STATE_OUTDATED
+    assert indicators.traces.status == NA
+    assert compute_update_state(host, indicators) == UPDATE_STATE_UNVERIFIABLE
 
 
 # --------------------------------------------------------------------------
@@ -552,7 +637,7 @@ def test_compute_fleet_summary_security_installable_excludes_na_and_build() -> N
     host_ok = host_from_api(raw_ok)
 
     host_build = _host(1, build=True)  # a du contenu mais en build : exclu
-    host_no_content = _host_without_content(build=True)  # N/A sur les 4 indicateurs : exclu
+    host_no_content = _host_without_content()  # N/A sur les 4 indicateurs : exclu
 
     config = _config()
     evaluated = [
@@ -562,7 +647,7 @@ def test_compute_fleet_summary_security_installable_excludes_na_and_build() -> N
     ]
     summary = compute_fleet_summary(evaluated)
     assert summary.security_installable_total == 2
-    assert summary.in_build == 2  # host_build et host_no_content(build=True)
+    assert summary.in_build == 1
     assert summary.na == 1
     assert summary.total == 3
     assert summary.evaluated == 2
@@ -618,3 +703,40 @@ def test_compute_by_lce_host_with_multiple_lce_counted_in_each(tmp_path: Path) -
     counted = {s.name: s.vms for s in by_lce}
     assert counted.get("Production") == 1
     assert counted.get("Staging") == 1
+
+
+def test_compute_by_lce_excludes_na_hosts() -> None:
+    config = _config()
+    host_na = _host_without_content()
+    evaluated = [evaluate_host(host_na, {}, config, now=NOW)]
+    by_lce = compute_by_lce(evaluated, ["Library", "Staging", "Production"])
+    # Un hote N/A n'a aucun environnement (point 2b) : aucune ligne --by-lce
+    # ne le compte, et aucune ligne n'est meme creee puisque personne n'y
+    # appartient.
+    assert by_lce == []
+
+
+def test_compute_by_lce_order_is_promotion_then_alphabetical() -> None:
+    config = _config()
+    host = host_from_api(_raw_host(0))
+    host.content_view_pairs = [
+        _pair(environment_name="Zorg", content_view_id=3),
+        _pair(environment_name="Alpha", content_view_id=3),
+    ]
+    evaluated = [evaluate_host(host, {}, config, now=NOW)]
+    # "Production" et "Staging" sont dans l'ordre de promotion fourni (mais
+    # aucun hote n'y appartient ici, donc ils ne produisent pas de ligne) ;
+    # "Zorg" et "Alpha" ne sont dans aucun ordre de promotion connu : ils
+    # doivent sortir par ordre alphabetique, jamais par ordre de rencontre
+    # (les environnements d'un hote sont stockes dans un frozenset,
+    # non ordonne).
+    by_lce = compute_by_lce(evaluated, ["Library", "Staging", "Production"])
+    assert [s.name for s in by_lce] == ["Alpha", "Zorg"]
+
+
+def test_compute_by_lce_security_critical_total_is_always_none() -> None:
+    config = _config()
+    host = host_from_api(_raw_host(0))
+    evaluated = [evaluate_host(host, {}, config, now=NOW)]
+    by_lce = compute_by_lce(evaluated, ["Library", "Staging", "Production"])
+    assert all(s.security_critical_total is None for s in by_lce)
