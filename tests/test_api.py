@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import http.server
 import io
 import json
+import threading
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -9,8 +11,8 @@ from typing import Any
 
 import pytest
 
-from katello_inspector.api import ApiClient, FixtureClient, _SameHostRedirectHandler
-from katello_inspector.exceptions import ApiError, UnsupportedSearchError
+from katello_inspector.api import ApiClient, FixtureClient, _NoRedirectHandler
+from katello_inspector.exceptions import ApiError, ConfigError, UnsupportedSearchError
 
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 
@@ -171,18 +173,104 @@ def test_count_uses_subtotal_without_downloading_results() -> None:
     assert client.count("/api/hosts") == 42
 
 
-def test_redirect_to_same_host_is_allowed() -> None:
-    handler = _SameHostRedirectHandler()
+def test_redirect_handler_refuses_same_host_redirect() -> None:
+    handler = _NoRedirectHandler()
     req = urllib.request.Request("https://katello.example.com/api/status")
-    new_req = handler.redirect_request(req, None, 302, "Found", None, "https://katello.example.com/api/status/")
-    assert new_req is not None
+    with pytest.raises(ApiError):
+        handler.redirect_request(req, None, 302, "Found", None, "https://katello.example.com/api/status/")
 
 
-def test_redirect_to_another_host_is_refused() -> None:
-    handler = _SameHostRedirectHandler()
+def test_redirect_handler_refuses_cross_host_redirect() -> None:
+    handler = _NoRedirectHandler()
     req = urllib.request.Request("https://katello.example.com/api/status")
     with pytest.raises(ApiError):
         handler.redirect_request(req, None, 302, "Found", None, "https://attaquant.example.com/api/status")
+
+
+def test_redirect_handler_refuses_downgrade_to_http() -> None:
+    handler = _NoRedirectHandler()
+    req = urllib.request.Request("https://katello.example.com/api/status")
+    with pytest.raises(ApiError):
+        handler.redirect_request(req, None, 302, "Found", None, "http://katello.example.com/api/status")
+
+
+class _RecordingHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self) -> None:  # noqa: N802 (nom impose par http.server)
+        self.server.seen_requests.append(dict(self.headers))  # type: ignore[attr-defined]
+        self.send_response(200)
+        self.end_headers()
+
+    def log_message(self, *args: object) -> None:
+        pass
+
+
+class _RedirectingHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self) -> None:  # noqa: N802
+        self.server.seen_requests.append(dict(self.headers))  # type: ignore[attr-defined]
+        self.send_response(302)
+        self.send_header("Location", self.server.redirect_target)  # type: ignore[attr-defined]
+        self.end_headers()
+
+    def log_message(self, *args: object) -> None:
+        pass
+
+
+def _start_local_server(handler_cls: type[http.server.BaseHTTPRequestHandler]) -> http.server.HTTPServer:
+    server = http.server.HTTPServer(("127.0.0.1", 0), handler_cls)
+    server.seen_requests = []  # type: ignore[attr-defined]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server
+
+
+def test_redirect_is_never_followed_authorization_never_reaches_another_origin() -> None:
+    # Serveurs http.server reels (pas de mock) : un serveur B qui ne doit
+    # jamais recevoir la moindre requete, et un serveur A qui redirige vers B
+    # en http://. Si la redirection etait suivie, l'en-tete Authorization
+    # partirait vers B.
+    target = _start_local_server(_RecordingHandler)
+    try:
+        redirect_url = f"http://127.0.0.1:{target.server_port}/elsewhere"
+        redirector = _start_local_server(_RedirectingHandler)
+        redirector.redirect_target = redirect_url  # type: ignore[attr-defined]
+        try:
+            opener = urllib.request.build_opener(_NoRedirectHandler())
+            req = urllib.request.Request(f"http://127.0.0.1:{redirector.server_port}/start")
+            req.add_header("Authorization", "Basic c2VjcmV0")
+            with pytest.raises(ApiError):
+                opener.open(req, timeout=2)
+            assert target.seen_requests == []
+        finally:
+            redirector.shutdown()
+    finally:
+        target.shutdown()
+
+
+def test_base_url_must_be_https() -> None:
+    with pytest.raises(ConfigError):
+        ApiClient("http://katello.example.com", "inspector-ro", "s3cr3t")
+
+
+def test_base_url_must_have_a_hostname() -> None:
+    with pytest.raises(ConfigError):
+        ApiClient("https://", "inspector-ro", "s3cr3t")
+
+
+def test_base_url_https_is_accepted() -> None:
+    client = _client()
+    assert client is not None
+
+
+def test_malformed_request_value_error_becomes_api_error() -> None:
+    client = _client()
+
+    class _BoomOpener:
+        def open(self, req: urllib.request.Request, timeout: float | None = None) -> _FakeResponse:
+            raise ValueError("en-tete invalide")
+
+    client._opener = _BoomOpener()
+    with pytest.raises(ApiError):
+        client.get("/api/status")
 
 
 def test_fixture_client_replays_recorded_response() -> None:

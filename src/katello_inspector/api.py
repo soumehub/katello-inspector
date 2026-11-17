@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from . import __version__
-from .exceptions import ApiError, UnsupportedSearchError
+from .exceptions import ApiError, ConfigError, UnsupportedSearchError
 
 DEFAULT_PAGE_SIZE = 200
 DEFAULT_MAX_PAGES = 10_000
@@ -42,11 +42,12 @@ def _is_unsupported_search(status: int, text: str) -> bool:
     return status in (400, 500) and _UNSUPPORTED_SEARCH_MARKER in text.lower()
 
 
-class _SameHostRedirectHandler(urllib.request.HTTPRedirectHandler):
-    """Suit une redirection seulement si elle reste sur le meme hote.
+class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Ne suit jamais de redirection, quelle que soit sa cible.
 
-    Le jeton est transmis dans l'en-tete Authorization : le laisser suivre une
-    redirection vers un autre hote le ferait fuiter.
+    Le jeton est transmis dans l'en-tete Authorization, qu'urllib reconduit
+    par defaut sur une redirection meme vers une autre origine ou vers
+    http://. La seule politique sure est de n'en suivre aucune.
     """
 
     def redirect_request(
@@ -58,11 +59,20 @@ class _SameHostRedirectHandler(urllib.request.HTTPRedirectHandler):
         headers: Any,
         newurl: str,
     ) -> urllib.request.Request | None:
-        old_host = urllib.parse.urlsplit(req.full_url).netloc
-        new_host = urllib.parse.urlsplit(newurl).netloc
-        if new_host != old_host:
-            raise ApiError(f"redirection refusee vers un autre hote ({new_host!r})")
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
+        target = urllib.parse.urlsplit(newurl).netloc
+        raise ApiError(f"redirection HTTP {code} refusee (vers {target!r})")
+
+
+def _validate_base_url(base_url: str) -> str:
+    parsed = urllib.parse.urlsplit(base_url)
+    if parsed.scheme != "https":
+        raise ConfigError(
+            "adresse du serveur refusee : seul https:// est accepte "
+            "(le jeton circulerait en clair sur http://)"
+        )
+    if not parsed.hostname:
+        raise ConfigError("adresse du serveur invalide : hote manquant")
+    return base_url.rstrip("/")
 
 
 def _build_ssl_context(*, ca_file: str | None, insecure: bool) -> ssl.SSLContext:
@@ -178,15 +188,13 @@ class ApiClient(BaseApiClient):
         max_pages: int = DEFAULT_MAX_PAGES,
     ) -> None:
         super().__init__(page_size=page_size, max_pages=max_pages)
-        self._base_url = base_url.rstrip("/")
+        self._base_url = _validate_base_url(base_url)
         self._timeout = timeout
         self._auth_header = "Basic " + base64.b64encode(f"{user}:{token}".encode()).decode("ascii")
         self._user_agent = f"katello-inspector/{__version__}"
         self.tls_verified = not insecure
         ctx = _build_ssl_context(ca_file=ca_file, insecure=insecure)
-        self._opener = urllib.request.build_opener(
-            _SameHostRedirectHandler(), urllib.request.HTTPSHandler(context=ctx)
-        )
+        self._opener = urllib.request.build_opener(_NoRedirectHandler(), urllib.request.HTTPSHandler(context=ctx))
 
     def _send(self, path: str, params: Mapping[str, Any]) -> tuple[int, bytes]:
         qs = urllib.parse.urlencode(params, doseq=True) if params else ""
@@ -200,6 +208,8 @@ class ApiClient(BaseApiClient):
                 return resp.status, resp.read()
         except urllib.error.HTTPError as exc:
             return exc.code, (exc.read() or b"")
+        except ValueError as exc:
+            raise ApiError(f"requete invalide sur {path} : {exc}") from exc
 
 
 def _fixture_key(path: str, params: Mapping[str, Any]) -> tuple[str, tuple[tuple[str, str], ...]]:
