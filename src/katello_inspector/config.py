@@ -115,7 +115,14 @@ def _resolve_str(cli_value: str | None, env_name: str, ini_value: str | None, de
     return default
 
 
-def _resolve_int(cli_value: int | None, env_name: str, ini_value: str | None, default: int) -> int:
+def _resolve_int(
+    cli_value: int | None,
+    env_name: str,
+    ini_value: str | None,
+    default: int,
+    *,
+    minimum: int | None = None,
+) -> int:
     raw: Any = cli_value
     if raw is None:
         raw = os.environ.get(ENV_PREFIX + env_name)
@@ -123,10 +130,15 @@ def _resolve_int(cli_value: int | None, env_name: str, ini_value: str | None, de
         raw = ini_value
     if raw is None:
         return default
+    if isinstance(raw, bool):
+        raise ConfigError(f"valeur numerique attendue pour {env_name} : {raw!r}")
     try:
-        return int(raw)
+        value = int(raw)
     except (TypeError, ValueError) as exc:
         raise ConfigError(f"valeur numerique attendue pour {env_name} : {raw!r}") from exc
+    if minimum is not None and value < minimum:
+        raise ConfigError(f"{env_name} doit etre superieur ou egal a {minimum} (recu {value})")
+    return value
 
 
 def _resolve_float(cli_value: float | None, env_name: str, ini_value: str | None, default: float) -> float:
@@ -211,7 +223,9 @@ def build_config(args: Any) -> Config:
     timeout = _resolve_float(
         getattr(args, "timeout", None), "TIMEOUT", parser.get("server", "timeout", fallback=None), DEFAULT_TIMEOUT
     )
-    page_size = _resolve_int(None, "PAGE_SIZE", parser.get("server", "page_size", fallback=None), DEFAULT_PAGE_SIZE)
+    page_size = _resolve_int(
+        None, "PAGE_SIZE", parser.get("server", "page_size", fallback=None), DEFAULT_PAGE_SIZE, minimum=1
+    )
     user = _resolve_str(None, "USER", parser.get("auth", "user", fallback=None))
 
     token, token_warning = _resolve_token(args, parser, monitoring=monitoring)

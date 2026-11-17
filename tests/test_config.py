@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from katello_inspector import config as config_mod
-from katello_inspector.config import ThresholdSet, build_config, cv_lag_enabled, threshold_for
+from katello_inspector.config import ThresholdSet, _resolve_int, build_config, cv_lag_enabled, threshold_for
 from katello_inspector.exceptions import ConfigError
 
 
@@ -147,3 +147,25 @@ def test_no_color_env_var_is_respected(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("NO_COLOR", "1")
     config = build_config(SimpleNamespace())
     assert config.color == "never"
+
+
+def test_resolve_int_rejects_bool_values() -> None:
+    with pytest.raises(ConfigError):
+        _resolve_int(True, "SOME_FLAG", None, 1)
+
+
+def test_resolve_int_rejects_values_below_minimum() -> None:
+    with pytest.raises(ConfigError):
+        _resolve_int(0, "PAGE_SIZE", None, 200, minimum=1)
+
+
+def test_page_size_must_be_positive(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("KATELLO_INSPECTOR_PAGE_SIZE", "0")
+    with pytest.raises(ConfigError):
+        build_config(SimpleNamespace())
+
+
+def test_page_size_rejects_non_numeric_value(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("KATELLO_INSPECTOR_PAGE_SIZE", "beaucoup")
+    with pytest.raises(ConfigError):
+        build_config(SimpleNamespace())

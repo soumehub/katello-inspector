@@ -42,6 +42,12 @@ def _is_unsupported_search(status: int, text: str) -> bool:
     return status in (400, 500) and _UNSUPPORTED_SEARCH_MARKER in text.lower()
 
 
+def _coerce_total(value: Any, path: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ApiError(f"pagination : total/subtotal invalide sur {path}")
+    return value
+
+
 def _parse_json_object(text: str, path: str) -> dict[str, Any] | None:
     """Decode un corps JSON en objet, jamais une exception brute ni le corps lui-meme.
 
@@ -113,6 +119,13 @@ class BaseApiClient:
     """
 
     def __init__(self, *, page_size: int = DEFAULT_PAGE_SIZE, max_pages: int = DEFAULT_MAX_PAGES) -> None:
+        # Filet de securite : config.py valide deja page_size avant d'arriver
+        # ici (ConfigError, code retour propre) ; cette verification protege
+        # un appel direct du constructeur (tests, usage futur).
+        if isinstance(page_size, bool) or page_size < 1:
+            raise ValueError(f"page_size doit etre un entier positif (recu {page_size!r})")
+        if isinstance(max_pages, bool) or max_pages < 1:
+            raise ValueError(f"max_pages doit etre un entier positif (recu {max_pages!r})")
         self._page_size = page_size
         self._max_pages = max_pages
 
@@ -162,11 +175,13 @@ class BaseApiClient:
             response = self.get(path, query)
             body = response.data or {}
             results = body.get("results", [])
+            if not isinstance(results, list):
+                raise ApiError(f"pagination : 'results' n'est pas une liste sur {path}")
             yield results
             fetched += len(results)
             subtotal = body.get("subtotal", body.get("total"))
             if expected is None and subtotal is not None:
-                expected = subtotal
+                expected = _coerce_total(subtotal, path)
             if not results:
                 break
             if expected is not None and fetched >= expected:
@@ -187,7 +202,7 @@ class BaseApiClient:
         total = body.get("subtotal", body.get("total"))
         if total is None:
             raise ApiError(f"compteur indisponible sur {path}")
-        return int(total)
+        return _coerce_total(total, path)
 
 
 class ApiClient(BaseApiClient):

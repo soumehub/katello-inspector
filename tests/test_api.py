@@ -173,6 +173,43 @@ def test_count_uses_subtotal_without_downloading_results() -> None:
     assert client.count("/api/hosts") == 42
 
 
+def test_page_size_must_be_a_positive_integer() -> None:
+    with pytest.raises(ValueError):
+        _client(page_size=0)
+
+
+def test_max_pages_must_be_a_positive_integer() -> None:
+    with pytest.raises(ValueError):
+        _client(max_pages=0)
+
+
+def test_page_size_rejects_bool() -> None:
+    with pytest.raises(ValueError):
+        _client(page_size=True)
+
+
+def test_pagination_rejects_results_that_is_not_a_list() -> None:
+    client = _client()
+    client._opener = _ScriptedOpener([(200, json.dumps({"results": "oops"}).encode())])
+    with pytest.raises(ApiError):
+        list(client.iter_results("/api/hosts"))
+
+
+def test_pagination_rejects_non_integer_total() -> None:
+    client = _client()
+    body = json.dumps({"results": [1], "subtotal": "beaucoup"}).encode()
+    client._opener = _ScriptedOpener([(200, body)])
+    with pytest.raises(ApiError):
+        list(client.iter_results("/api/hosts"))
+
+
+def test_count_rejects_non_integer_total() -> None:
+    client = _client()
+    client._opener = _ScriptedOpener([(200, json.dumps({"subtotal": "beaucoup"}).encode())])
+    with pytest.raises(ApiError):
+        client.count("/api/hosts")
+
+
 def test_invalid_json_body_becomes_api_error() -> None:
     client = _client()
     client._opener = _ScriptedOpener([(200, b"ceci n'est pas du json")])
