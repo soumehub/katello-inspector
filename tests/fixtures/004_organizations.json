@@ -1,0 +1,36 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/api/organizations",
+  "params": {
+   "search": "name=\"MonOrganisation\""
+  }
+ },
+ "status": 200,
+ "kind": "ok",
+ "elapsed_ms": 112,
+ "response": {
+  "total": 1,
+  "subtotal": 1,
+  "page": 1,
+  "per_page": 20,
+  "search": "name=\"MonOrganisation\"",
+  "sort": {
+   "by": null,
+   "order": null
+  },
+  "results": [
+   {
+    "ancestry": null,
+    "parent_id": null,
+    "parent_name": null,
+    "created_at": "2026-08-14 11:56:26 UTC",
+    "updated_at": "2026-08-14 11:58:18 UTC",
+    "id": 1,
+    "name": "MonOrganisation",
+    "title": "MonOrganisation",
+    "description": null
+   }
+  ]
+ }
+}

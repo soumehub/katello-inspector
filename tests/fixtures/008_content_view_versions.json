@@ -1,0 +1,3586 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/katello/api/content_view_versions",
+  "params": {
+   "organization_id": 1,
+   "per_page": 100
+  }
+ },
+ "status": 200,
+ "kind": "ok",
+ "elapsed_ms": 2166,
+ "response": {
+  "total": 20,
+  "subtotal": 20,
+  "selectable": 20,
+  "page": 1,
+  "per_page": 100,
+  "error": null,
+  "search": null,
+  "sort": {
+   "by": "version",
+   "order": "desc"
+  },
+  "results": [
+   {
+    "version": "11.0",
+    "major": 11,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 12,
+    "name": "Rocky 9 11.0",
+    "created_at": "2026-09-29 14:31:47 UTC",
+    "updated_at": "2026-09-29 14:32:12 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/Rocky_9",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/Rocky_9",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/Rocky_9",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "about 2 months",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 1
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "about 2 months",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 1
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "about 2 months",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 3,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 1
+     }
+    ],
+    "repositories": [
+     {
+      "id": 110,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 46,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 107,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 106,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 105,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 109,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 112,
+      "name": "epel",
+      "label": "epel",
+      "content_type": "yum",
+      "library_instance_id": 64,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 108,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 113,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 111,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 63,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-09-30 08:08:10 UTC",
+     "updated_at": "2026-09-30 08:08:18 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "11.0",
+     "publish": false,
+     "version_id": 12,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 44751,
+    "modulemd_count": 66,
+    "erratum_count": 10063,
+    "package_group_count": 122,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 66,
+    "package_count": 44751,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 9,
+    "errata_counts": {
+     "security": 1636,
+     "bugfix": 3591,
+     "enhancement": 1096,
+     "total": 10063
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "10.0",
+    "major": 10,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 11,
+    "name": "Rocky 9 10.0",
+    "created_at": "2026-09-17 10:25:33 UTC",
+    "updated_at": "2026-09-17 10:26:01 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 96,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 98,
+      "name": "epel",
+      "label": "epel",
+      "content_type": "yum",
+      "library_instance_id": 64,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 99,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 102,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 63,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 104,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 103,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 101,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 46,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 100,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 97,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-09-17 10:25:36 UTC",
+     "updated_at": "2026-09-17 10:26:01 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "10.0",
+     "publish": false,
+     "version_id": 11,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 44359,
+    "modulemd_count": 64,
+    "erratum_count": 10013,
+    "package_group_count": 122,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 64,
+    "package_count": 44359,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 9,
+    "errata_counts": {
+     "security": 1596,
+     "bugfix": 3592,
+     "enhancement": 1093,
+     "total": 10013
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "9.0",
+    "major": 9,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 10,
+    "name": "Rocky 9 9.0",
+    "created_at": "2026-09-14 09:35:57 UTC",
+    "updated_at": "2026-09-14 09:36:24 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 91,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 88,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 92,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 46,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 94,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 87,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 90,
+      "name": "epel",
+      "label": "epel",
+      "content_type": "yum",
+      "library_instance_id": 64,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 93,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 63,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 89,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 95,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-09-14 09:36:00 UTC",
+     "updated_at": "2026-09-14 09:36:24 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "9.0",
+     "publish": false,
+     "version_id": 10,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 43943,
+    "modulemd_count": 61,
+    "erratum_count": 9997,
+    "package_group_count": 122,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 61,
+    "package_count": 43943,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 9,
+    "errata_counts": {
+     "security": 1583,
+     "bugfix": 3591,
+     "enhancement": 1094,
+     "total": 9997
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "8.0",
+    "major": 8,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 9,
+    "name": "Rocky 9 8.0",
+    "created_at": "2026-09-08 16:01:29 UTC",
+    "updated_at": "2026-09-08 16:01:58 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 73,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 72,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 74,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 63,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 75,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 76,
+      "name": "epel",
+      "label": "epel",
+      "content_type": "yum",
+      "library_instance_id": 64,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 77,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 79,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 80,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 78,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 46,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-09-08 16:01:33 UTC",
+     "updated_at": "2026-09-08 16:01:58 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "8.0",
+     "publish": false,
+     "version_id": 9,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 43578,
+    "modulemd_count": 60,
+    "erratum_count": 9981,
+    "package_group_count": 122,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 60,
+    "package_count": 43578,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 9,
+    "errata_counts": {
+     "security": 1557,
+     "bugfix": 3593,
+     "enhancement": 1099,
+     "total": 9981
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "7.0",
+    "major": 7,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 8,
+    "name": "Rocky 9 7.0",
+    "created_at": "2026-09-08 15:59:19 UTC",
+    "updated_at": "2026-09-08 15:59:37 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 67,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 65,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 69,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 46,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 68,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 70,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 71,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 66,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-09-08 15:59:22 UTC",
+     "updated_at": "2026-09-08 15:59:37 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "7.0",
+     "publish": false,
+     "version_id": 8,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 15763,
+    "modulemd_count": 60,
+    "erratum_count": 4381,
+    "package_group_count": 98,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 60,
+    "package_count": 15763,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 7,
+    "errata_counts": {
+     "security": 1332,
+     "bugfix": 2942,
+     "enhancement": 107,
+     "total": 4381
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "6.0",
+    "major": 6,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 7,
+    "name": "Rocky 9 6.0",
+    "created_at": "2026-09-04 14:47:36 UTC",
+    "updated_at": "2026-09-04 14:47:53 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 56,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 53,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 55,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 54,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 58,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 59,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 57,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 46,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-09-04 14:47:38 UTC",
+     "updated_at": "2026-09-04 14:47:53 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "6.0",
+     "publish": false,
+     "version_id": 7,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 15733,
+    "modulemd_count": 60,
+    "erratum_count": 4378,
+    "package_group_count": 98,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 60,
+    "package_count": 15733,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 7,
+    "errata_counts": {
+     "security": 1329,
+     "bugfix": 2942,
+     "enhancement": 107,
+     "total": 4378
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "5.0",
+    "major": 5,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 6,
+    "name": "Rocky 9 5.0",
+    "created_at": "2026-09-04 14:40:05 UTC",
+    "updated_at": "2026-09-04 14:40:19 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 52,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 50,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 47,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 51,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 49,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 48,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-09-04 14:40:07 UTC",
+     "updated_at": "2026-09-04 14:40:19 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "5.0",
+     "publish": false,
+     "version_id": 6,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 14911,
+    "modulemd_count": 60,
+    "erratum_count": 4378,
+    "package_group_count": 98,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 60,
+    "package_count": 14911,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 6,
+    "errata_counts": {
+     "security": 1329,
+     "bugfix": 2942,
+     "enhancement": 107,
+     "total": 4378
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "4.0",
+    "major": 4,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 5,
+    "name": "Rocky 9 4.0",
+    "created_at": "2026-09-02 16:48:32 UTC",
+    "updated_at": "2026-09-02 16:48:49 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 40,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 41,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 42,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": 36,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 39,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 38,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 37,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-09-02 16:48:35 UTC",
+     "updated_at": "2026-09-02 16:48:49 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "4.0",
+     "publish": false,
+     "version_id": 5,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 14872,
+    "modulemd_count": 59,
+    "erratum_count": 4368,
+    "package_group_count": 98,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 59,
+    "package_count": 14872,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 6,
+    "errata_counts": {
+     "security": 1319,
+     "bugfix": 2942,
+     "enhancement": 107,
+     "total": 4368
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "3.0",
+    "major": 3,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 4,
+    "name": "Rocky 9 3.0",
+    "created_at": "2026-08-24 16:43:37 UTC",
+    "updated_at": "2026-08-24 16:43:51 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 31,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 32,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 30,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 33,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 34,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-08-24 16:43:39 UTC",
+     "updated_at": "2026-08-24 16:43:51 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "3.0",
+     "publish": false,
+     "version_id": 4,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 14428,
+    "modulemd_count": 92,
+    "erratum_count": 4336,
+    "package_group_count": 98,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 92,
+    "package_count": 14428,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 5,
+    "errata_counts": {
+     "security": 1287,
+     "bugfix": 2942,
+     "enhancement": 107,
+     "total": 4336
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "2.0",
+    "major": 2,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 3,
+    "default": false,
+    "description": "Description generique",
+    "id": 24,
+    "name": "cv-os-rocky 2.0",
+    "created_at": "2026-10-23 10:59:01 UTC",
+    "updated_at": "2026-10-23 10:59:22 UTC",
+    "content_view": {
+     "id": 3,
+     "name": "cv-os-rocky",
+     "label": "cv-os-rocky",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/cv-os-rocky",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/cv-os-rocky",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/cv-os-rocky",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "24 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": false
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 1,
+      "multi_env_ak_count": 1,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "24 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": false
+      },
+      "host_count": 4,
+      "multi_env_host_count": 4,
+      "activation_key_count": 1,
+      "multi_env_ak_count": 1,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "24 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": false
+      },
+      "host_count": 11,
+      "multi_env_host_count": 11,
+      "activation_key_count": 1,
+      "multi_env_ak_count": 1,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 200,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 201,
+      "name": "epel-el9-x86_64",
+      "label": "epel-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 117,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 198,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 202,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 199,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-10-23 10:59:03 UTC",
+     "updated_at": "2026-10-23 10:59:22 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "fd8a8d70-e226-5f8e-b83b-60ffc1ff7f0b",
+      "label": "Actions::Katello::ContentView::Publish",
+      "pending": false,
+      "action": "Publish content view 'cv-os-rocky'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-23 10:59:00 UTC",
+      "ended_at": "2026-10-23 10:59:22 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 3,
+        "name": "cv-os-rocky",
+        "label": "cv-os-rocky"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "history_id": 83,
+       "content_view_id": 3,
+       "auto_published": null,
+       "content_view_version_name": "cv-os-rocky 2.0",
+       "content_view_version_id": 24,
+       "environment_id": 1,
+       "user_id": 5,
+       "skip_promotion": null,
+       "auto_publish_content_view_id": 3,
+       "current_request_id": "fbe542e8-0056-5123-842c-3c1fdd625949",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {
+       "auto_publish_content_view_ids": [],
+       "auto_publish_content_view_version_id": 24,
+       "content_view_id": 3,
+       "content_view_version_id": 24,
+       "skip_promotion": null,
+       "history_id": 83
+      },
+      "humanized": {
+       "action": "Publish",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-os-rocky'",
+          "link": "/content_views/3/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-23 10:59:00 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "2.0",
+     "publish": false,
+     "version_id": 24,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 43712,
+    "modulemd_count": 74,
+    "erratum_count": 10130,
+    "package_group_count": 121,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 74,
+    "package_count": 43712,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 5,
+    "errata_counts": {
+     "security": 1731,
+     "bugfix": 3603,
+     "enhancement": 1089,
+     "total": 10130
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "2.0",
+    "major": 2,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "Description generique",
+    "id": 3,
+    "name": "Rocky 9 2.0",
+    "created_at": "2026-08-21 12:35:35 UTC",
+    "updated_at": "2026-08-21 12:35:44 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 25,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 23,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 26,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": 21,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 24,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 22,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-03",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-08-24 09:01:38 UTC",
+     "updated_at": "2026-08-24 09:01:41 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "2.0",
+     "publish": false,
+     "version_id": 3,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 14362,
+    "modulemd_count": 90,
+    "erratum_count": 4333,
+    "package_group_count": 98,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 90,
+    "package_count": 14362,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 5,
+    "errata_counts": {
+     "security": 1284,
+     "bugfix": 2942,
+     "enhancement": 107,
+     "total": 4333
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 12,
+    "default": false,
+    "description": "Description generique",
+    "id": 23,
+    "name": "cv-app-tomcat 1.0",
+    "created_at": "2026-10-21 19:32:46 UTC",
+    "updated_at": "2026-10-21 19:32:51 UTC",
+    "content_view": {
+     "id": 12,
+     "name": "cv-app-tomcat",
+     "label": "cv-app-tomcat",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/cv-app-tomcat",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/cv-app-tomcat",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/cv-app-tomcat",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "26 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "26 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "26 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 186,
+      "name": "tomcat9",
+      "label": "tomcat9",
+      "content_type": "file",
+      "library_instance_id": 161,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 185,
+      "name": "tomcat11",
+      "label": "tomcat11",
+      "content_type": "file",
+      "library_instance_id": 163,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 184,
+      "name": "tomcat10",
+      "label": "tomcat10",
+      "content_type": "file",
+      "library_instance_id": 162,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-10-21 19:34:21 UTC",
+     "updated_at": "2026-10-21 19:34:28 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "3e3d8b23-2b1f-5218-b7f4-4f137d929d78",
+      "label": "Actions::Katello::ContentView::Promote",
+      "pending": false,
+      "action": "Promote content view 'cv-app-tomcat'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-21 19:34:20 UTC",
+      "ended_at": "2026-10-21 19:34:28 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 12,
+        "name": "cv-app-tomcat",
+        "label": "cv-app-tomcat"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "environments": [
+        "Staging",
+        "Production"
+       ],
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "auto_publish_content_view_id": 12,
+       "current_request_id": "fabd4c5d-6fc7-5775-9597-09b3ce3c24f7",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {},
+      "humanized": {
+       "action": "Promote",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-app-tomcat'",
+          "link": "/content_views/12/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-21 19:34:20 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "1.0",
+     "publish": false,
+     "version_id": 23,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "file_count": 9,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "python_package_count": 0,
+    "rpm_count": 0,
+    "modulemd_count": 0,
+    "erratum_count": 0,
+    "package_group_count": 0,
+    "srpm_count": 0,
+    "module_stream_count": 0,
+    "package_count": 0,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 3,
+    "python_repository_count": 0,
+    "yum_repository_count": 0,
+    "errata_counts": {
+     "security": 0,
+     "bugfix": 0,
+     "enhancement": 0,
+     "total": 0
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 13,
+    "default": false,
+    "description": "Description generique",
+    "id": 22,
+    "name": "cv-app-corretto 1.0",
+    "created_at": "2026-10-21 19:32:19 UTC",
+    "updated_at": "2026-10-21 19:32:21 UTC",
+    "content_view": {
+     "id": 13,
+     "name": "cv-app-corretto",
+     "label": "cv-app-corretto",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/cv-app-corretto",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/cv-app-corretto",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/cv-app-corretto",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "26 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "26 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "26 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 2,
+      "multi_env_host_count": 2,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 182,
+      "name": "corretto8-x86_64",
+      "label": "corretto8-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 177,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-10-21 19:33:38 UTC",
+     "updated_at": "2026-10-21 19:33:41 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "1102370a-2353-5c6a-ad07-8398373e809d",
+      "label": "Actions::Katello::ContentView::Promote",
+      "pending": false,
+      "action": "Promote content view 'cv-app-corretto'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-21 19:33:37 UTC",
+      "ended_at": "2026-10-21 19:33:41 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 13,
+        "name": "cv-app-corretto",
+        "label": "cv-app-corretto"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "environments": [
+        "Staging",
+        "Production"
+       ],
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "auto_publish_content_view_id": 13,
+       "current_request_id": "d5a07b47-ddf9-573e-a877-dd4574853e8f",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {},
+      "humanized": {
+       "action": "Promote",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-app-corretto'",
+          "link": "/content_views/13/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-21 19:33:37 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "1.0",
+     "publish": false,
+     "version_id": 22,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "file_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "python_package_count": 0,
+    "rpm_count": 174,
+    "modulemd_count": 0,
+    "erratum_count": 0,
+    "package_group_count": 0,
+    "srpm_count": 0,
+    "module_stream_count": 0,
+    "package_count": 174,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 1,
+    "errata_counts": {
+     "security": 0,
+     "bugfix": 0,
+     "enhancement": 0,
+     "total": 0
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 6,
+    "default": false,
+    "description": "Description generique",
+    "id": 17,
+    "name": "cv-app-elasticsearch 1.0",
+    "created_at": "2026-10-16 15:14:06 UTC",
+    "updated_at": "2026-10-16 15:14:09 UTC",
+    "content_view": {
+     "id": 6,
+     "name": "cv-app-elasticsearch",
+     "label": "cv-app-elasticsearch",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/cv-app-elasticsearch",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/cv-app-elasticsearch",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/cv-app-elasticsearch",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "about 1 month",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 3,
+      "multi_env_host_count": 3,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 139,
+      "name": "elasticsearch8",
+      "label": "elasticsearch8",
+      "content_type": "yum",
+      "library_instance_id": 114,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-10-19 07:36:53 UTC",
+     "updated_at": "2026-10-19 07:36:56 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "1a7e3898-906a-5c5d-9abf-c07e0e9c604a",
+      "label": "Actions::Katello::ContentView::Promote",
+      "pending": false,
+      "action": "Promote content view 'cv-app-elasticsearch'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-19 07:36:52 UTC",
+      "ended_at": "2026-10-19 07:36:56 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 6,
+        "name": "cv-app-elasticsearch",
+        "label": "cv-app-elasticsearch"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "environments": [
+        "Staging",
+        "Production"
+       ],
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "auto_publish_content_view_id": 6,
+       "current_request_id": "78c18eec-5d51-5a35-a560-f2a44491e815",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {},
+      "humanized": {
+       "action": "Promote",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-app-elasticsearch'",
+          "link": "/content_views/6/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-19 07:36:52 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "1.0",
+     "publish": false,
+     "version_id": 17,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 2933,
+    "modulemd_count": 0,
+    "erratum_count": 0,
+    "package_group_count": 0,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 0,
+    "package_count": 2933,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 1,
+    "errata_counts": {
+     "security": 0,
+     "bugfix": 0,
+     "enhancement": 0,
+     "total": 0
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 7,
+    "default": false,
+    "description": "Description generique",
+    "id": 16,
+    "name": "cv-app-nodejs 1.0",
+    "created_at": "2026-10-16 15:13:33 UTC",
+    "updated_at": "2026-10-16 15:13:35 UTC",
+    "content_view": {
+     "id": 7,
+     "name": "cv-app-nodejs",
+     "label": "cv-app-nodejs",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/cv-app-nodejs",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/cv-app-nodejs",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/cv-app-nodejs",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "about 1 month",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 1,
+      "multi_env_host_count": 1,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 137,
+      "name": "nodejs24-x86_64",
+      "label": "nodejs24-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 120,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-10-19 07:36:18 UTC",
+     "updated_at": "2026-10-19 07:36:21 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "35ec9406-ce31-5c86-b1f6-8c5baae6d147",
+      "label": "Actions::Katello::ContentView::Promote",
+      "pending": false,
+      "action": "Promote content view 'cv-app-nodejs'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-19 07:36:17 UTC",
+      "ended_at": "2026-10-19 07:36:21 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 7,
+        "name": "cv-app-nodejs",
+        "label": "cv-app-nodejs"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "environments": [
+        "Staging",
+        "Production"
+       ],
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "auto_publish_content_view_id": 7,
+       "current_request_id": "370d47ae-3429-5d50-a3a6-6dda47464bdf",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {},
+      "humanized": {
+       "action": "Promote",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-app-nodejs'",
+          "link": "/content_views/7/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-19 07:36:17 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "1.0",
+     "publish": false,
+     "version_id": 16,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 87,
+    "modulemd_count": 0,
+    "erratum_count": 0,
+    "package_group_count": 0,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 0,
+    "package_count": 87,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 1,
+    "errata_counts": {
+     "security": 0,
+     "bugfix": 0,
+     "enhancement": 0,
+     "total": 0
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 5,
+    "default": false,
+    "description": "Description generique",
+    "id": 15,
+    "name": "cv-app-postgresql 1.0",
+    "created_at": "2026-10-16 15:13:15 UTC",
+    "updated_at": "2026-10-16 15:13:18 UTC",
+    "content_view": {
+     "id": 5,
+     "name": "cv-app-postgresql",
+     "label": "cv-app-postgresql",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/cv-app-postgresql",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/cv-app-postgresql",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/cv-app-postgresql",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "about 1 month",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 1,
+      "multi_env_host_count": 1,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 135,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 115,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-10-19 07:35:37 UTC",
+     "updated_at": "2026-10-19 07:35:40 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "3f205c5d-ba18-5b7c-9384-a2522f69a946",
+      "label": "Actions::Katello::ContentView::Promote",
+      "pending": false,
+      "action": "Promote content view 'cv-app-postgresql'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-19 07:35:37 UTC",
+      "ended_at": "2026-10-19 07:35:40 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 5,
+        "name": "cv-app-postgresql",
+        "label": "cv-app-postgresql"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "environments": [
+        "Staging",
+        "Production"
+       ],
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "auto_publish_content_view_id": 5,
+       "current_request_id": "7a6060bf-0b5e-5bfc-b24f-53e149b03a4a",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {},
+      "humanized": {
+       "action": "Promote",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-app-postgresql'",
+          "link": "/content_views/5/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-19 07:35:37 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "1.0",
+     "publish": false,
+     "version_id": 15,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 1442,
+    "modulemd_count": 0,
+    "erratum_count": 0,
+    "package_group_count": 1,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 0,
+    "package_count": 1442,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 1,
+    "errata_counts": {
+     "security": 0,
+     "bugfix": 0,
+     "enhancement": 0,
+     "total": 0
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 4,
+    "default": false,
+    "description": "Description generique",
+    "id": 14,
+    "name": "cv-infra-agents 1.0",
+    "created_at": "2026-10-16 15:12:46 UTC",
+    "updated_at": "2026-10-16 15:12:50 UTC",
+    "content_view": {
+     "id": 4,
+     "name": "cv-infra-agents",
+     "label": "cv-infra-agents",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library/cv-infra-agents",
+      "environment_id": 1,
+      "environment_name": "Library"
+     },
+     {
+      "label": "Staging/cv-infra-agents",
+      "environment_id": 2,
+      "environment_name": "Staging"
+     },
+     {
+      "label": "Production/cv-infra-agents",
+      "environment_id": 3,
+      "environment_name": "Production"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "about 1 month",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": false
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 1,
+      "multi_env_ak_count": 1,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": false
+      },
+      "host_count": 4,
+      "multi_env_host_count": 4,
+      "activation_key_count": 1,
+      "multi_env_ak_count": 1,
+      "hostgroup_count": 0
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production",
+      "publish_date": "29 days",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": false
+      },
+      "host_count": 11,
+      "multi_env_host_count": 11,
+      "activation_key_count": 1,
+      "multi_env_ak_count": 1,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 132,
+      "name": "zabbix7-el9-x86_64",
+      "label": "zabbix7-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 118,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 131,
+      "name": "foreman3.19-el9-x86_64",
+      "label": "foreman3_19-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 119,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-10-19 07:34:54 UTC",
+     "updated_at": "2026-10-19 07:34:59 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "e0d5def3-d555-5b6e-82aa-b62af901f8cd",
+      "label": "Actions::Katello::ContentView::Promote",
+      "pending": false,
+      "action": "Promote content view 'cv-infra-agents'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-19 07:34:53 UTC",
+      "ended_at": "2026-10-19 07:34:59 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 4,
+        "name": "cv-infra-agents",
+        "label": "cv-infra-agents"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "environments": [
+        "Staging",
+        "Production"
+       ],
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "auto_publish_content_view_id": 4,
+       "current_request_id": "3c9252b8-5b75-54ca-a63b-4ff919f2f980",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {},
+      "humanized": {
+       "action": "Promote",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-infra-agents'",
+          "link": "/content_views/4/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-19 07:34:53 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "1.0",
+     "publish": false,
+     "version_id": 14,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 861,
+    "modulemd_count": 0,
+    "erratum_count": 0,
+    "package_group_count": 0,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 0,
+    "package_count": 861,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 2,
+    "errata_counts": {
+     "security": 0,
+     "bugfix": 0,
+     "enhancement": 0,
+     "total": 0
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 3,
+    "default": false,
+    "description": "Description generique",
+    "id": 13,
+    "name": "cv-os-rocky 1.0",
+    "created_at": "2026-10-16 15:11:45 UTC",
+    "updated_at": "2026-10-16 15:11:59 UTC",
+    "content_view": {
+     "id": 3,
+     "name": "cv-os-rocky",
+     "label": "cv-os-rocky",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 121,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 124,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 123,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 125,
+      "name": "epel-el9-x86_64",
+      "label": "epel-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": 117,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 122,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": "Description generique",
+     "action": "promotion",
+     "created_at": "2026-10-19 07:32:18 UTC",
+     "updated_at": "2026-10-19 07:32:34 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": {
+      "id": "b6f3bb29-d2ad-5c2d-807e-fe0cf885e400",
+      "label": "Actions::Katello::ContentView::Promote",
+      "pending": false,
+      "action": "Promote content view 'cv-os-rocky'; organization 'MonOrganisation'",
+      "username": "utilisateur-01@example.com",
+      "started_at": "2026-10-19 07:32:17 UTC",
+      "ended_at": "2026-10-19 07:32:34 UTC",
+      "state": "stopped",
+      "result": "success",
+      "progress": 1.0,
+      "input": {
+       "content_view": {
+        "id": 3,
+        "name": "cv-os-rocky",
+        "label": "cv-os-rocky"
+       },
+       "organization": {
+        "id": 1,
+        "name": "MonOrganisation",
+        "label": "MonOrganisation"
+       },
+       "environments": [
+        "Staging",
+        "Production"
+       ],
+       "services_checked": [
+        "pulp3",
+        "candlepin",
+        "candlepin_auth"
+       ],
+       "auto_publish_content_view_id": 3,
+       "current_request_id": "c6a6d568-1397-52ca-9853-997ba12b3650",
+       "current_timezone": "Europe/Paris",
+       "current_organization_id": 1,
+       "current_location_id": 2,
+       "current_user_id": 5
+      },
+      "output": {},
+      "humanized": {
+       "action": "Promote",
+       "input": [
+        [
+         "content_view",
+         {
+          "text": "content view 'cv-os-rocky'",
+          "link": "/content_views/3/versions"
+         }
+        ],
+        [
+         "organization",
+         {
+          "text": "organization 'MonOrganisation'",
+          "link": "/organizations/1/edit"
+         }
+        ]
+       ],
+       "output": "",
+       "errors": []
+      },
+      "cli_example": null,
+      "start_at": "2026-10-19 07:32:17 UTC",
+      "duration": null,
+      "available_actions": {
+       "cancellable": false,
+       "resumable": false
+      }
+     },
+     "version": "1.0",
+     "publish": false,
+     "version_id": 13,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 43395,
+    "modulemd_count": 70,
+    "erratum_count": 10098,
+    "package_group_count": 121,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 70,
+    "package_count": 43395,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 5,
+    "errata_counts": {
+     "security": 1685,
+     "bugfix": 3596,
+     "enhancement": 1095,
+     "total": 10098
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 2,
+    "default": false,
+    "description": "",
+    "id": 2,
+    "name": "Rocky 9 1.0",
+    "created_at": "2026-08-20 13:13:07 UTC",
+    "updated_at": "2026-08-20 13:13:27 UTC",
+    "content_view": {
+     "id": 2,
+     "name": "Rocky 9",
+     "label": "Rocky_9",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [],
+    "environments": [],
+    "repositories": [
+     {
+      "id": 6,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": 1,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 7,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": 4,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 5,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": 2,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 8,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": 3,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": {
+     "user": "utilisateur-01@example.com",
+     "status": "successful",
+     "description": null,
+     "action": "promotion",
+     "created_at": "2026-08-20 13:13:09 UTC",
+     "updated_at": "2026-08-20 13:13:27 UTC",
+     "environment": {
+      "id": 3,
+      "name": "Production"
+     },
+     "task": null,
+     "version": "1.0",
+     "publish": false,
+     "version_id": 2,
+     "triggered_by": null,
+     "triggered_by_id": null
+    },
+    "active_history": [],
+    "rpm_count": 14224,
+    "modulemd_count": 90,
+    "erratum_count": 4330,
+    "package_group_count": 98,
+    "srpm_count": 0,
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "module_stream_count": 90,
+    "package_count": 14224,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 0,
+    "python_repository_count": 0,
+    "yum_repository_count": 4,
+    "errata_counts": {
+     "security": 1281,
+     "bugfix": 2942,
+     "enhancement": 107,
+     "total": 4330
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": false
+   },
+   {
+    "version": "1.0",
+    "major": 1,
+    "minor": 0,
+    "composite_content_view_ids": [],
+    "published_in_composite_content_view_ids": [],
+    "content_view_id": 1,
+    "default": true,
+    "description": null,
+    "id": 1,
+    "name": "Default Organization View 1.0",
+    "created_at": "2026-08-14 11:56:29 UTC",
+    "updated_at": "2026-11-16 17:16:57 UTC",
+    "content_view": {
+     "id": 1,
+     "name": "Default Organization View",
+     "label": "Default_Organization_View",
+     "generated_for": "none"
+    },
+    "composite_content_views": [],
+    "composite_content_view_versions": [],
+    "published_in_composite_content_views": [],
+    "content_view_environments": [
+     {
+      "label": "Library",
+      "environment_id": 1,
+      "environment_name": "Library"
+     }
+    ],
+    "environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library",
+      "publish_date": "3 months",
+      "permissions": {
+       "readable": true,
+       "promotable_or_removable": false,
+       "all_hosts_editable": true,
+       "all_keys_editable": true
+      },
+      "host_count": 0,
+      "multi_env_host_count": 0,
+      "activation_key_count": 0,
+      "multi_env_ak_count": 0,
+      "hostgroup_count": 0
+     }
+    ],
+    "repositories": [
+     {
+      "id": 21,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 35,
+      "name": "Dépôt pour les fichiers Tomcat tar.gz",
+      "label": "3f227528-5de9-5426-bc69-0753d17d53f1",
+      "content_type": "file",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 3,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 36,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 119,
+      "name": "foreman3.19-el9-x86_64",
+      "label": "foreman3_19-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 117,
+      "name": "epel-el9-x86_64",
+      "label": "epel-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 114,
+      "name": "elasticsearch8",
+      "label": "elasticsearch8",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 118,
+      "name": "zabbix7-el9-x86_64",
+      "label": "zabbix7-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 115,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 64,
+      "name": "epel",
+      "label": "epel",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 1,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 120,
+      "name": "nodejs24-x86_64",
+      "label": "nodejs24-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 46,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 162,
+      "name": "tomcat10",
+      "label": "tomcat10",
+      "content_type": "file",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 2,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 163,
+      "name": "tomcat11",
+      "label": "tomcat11",
+      "content_type": "file",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 177,
+      "name": "corretto8-x86_64",
+      "label": "corretto8-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 161,
+      "name": "tomcat9",
+      "label": "tomcat9",
+      "content_type": "file",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 4,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     },
+     {
+      "id": 63,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum",
+      "library_instance_id": null,
+      "mirroring_policy": "mirror_content_only"
+     }
+    ],
+    "last_event": null,
+    "active_history": [],
+    "ansible_collection_count": 0,
+    "deb_count": 0,
+    "docker_manifest_count": 0,
+    "docker_manifest_list_count": 0,
+    "docker_tag_count": 0,
+    "file_count": 0,
+    "python_package_count": 0,
+    "rpm_count": 0,
+    "modulemd_count": 0,
+    "erratum_count": 0,
+    "package_group_count": 0,
+    "srpm_count": 0,
+    "module_stream_count": 0,
+    "package_count": 0,
+    "component_view_count": 0,
+    "ansible_collection_repository_count": 0,
+    "deb_repository_count": 0,
+    "docker_repository_count": 0,
+    "file_repository_count": 4,
+    "python_repository_count": 0,
+    "yum_repository_count": 16,
+    "errata_counts": {
+     "security": 1820,
+     "bugfix": 3611,
+     "enhancement": 1081,
+     "total": 10218
+    },
+    "permissions": {
+     "deletable": false
+    },
+    "filters_applied": null
+   }
+  ]
+ }
+}
