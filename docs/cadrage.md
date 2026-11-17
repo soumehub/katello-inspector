@@ -157,6 +157,8 @@ Les valeurs sont des points de départ sans valeur normative, à ajuster selon l
 
 Le certificat du serveur est validé par défaut avec les CA du système, ou avec `ca_file`. `--insecure` doit être passé explicitement à chaque appel, et l'outil l'indique dans sa sortie.
 
+`--url` doit être en `https://` ; une adresse en `http://` est refusée sans aucune option pour l'autoriser, car le jeton y circulerait en clair (authentification HTTP Basic). Aucune redirection HTTP n'est suivie, quelle que soit sa cible : urllib reconduit l'en-tête `Authorization` sur une redirection par défaut, y compris vers une autre origine ou vers `http://`, donc la seule politique sûre est de n'en suivre aucune.
+
 ## Règles de statut
 
 Chaque indicateur reçoit l'un des cinq statuts OK, WARN, CRIT, UNKNOWN ou N/A ; les règles d'agrégation sont données en fin de section. Tous les seuils sont configurables ; les valeurs ci-dessous sont les défauts.
@@ -294,6 +296,8 @@ Toutes les sous-commandes renvoient la même enveloppe ; seul le contenu de `dat
 }
 ```
 
+Si l'outil lui-même échoue (erreur de configuration, d'API ou inattendue, en mode `--monitoring`), l'enveloppe renvoyée a les mêmes clés que ci-dessus : `command` (ou `null` si l'échec a eu lieu avant de savoir laquelle), `server` (ce qui en est connu, `null` sinon), `status` à `"UNKNOWN"`, `data` à `{}`, `unknown` avec une entrée `"indicator": "tool"`, plus un champ supplémentaire `"error"` (la même chaîne, au premier niveau, pour un consommateur qui veut l'erreur sans aller chercher dans `unknown`). Aucun champ n'est donc absent ou remplacé par une forme différente simplement parce que la commande a échoué.
+
 ### Contenu de `data` pour `list` (une entrée par VM)
 
 ```json
@@ -347,7 +351,7 @@ En mode manuel, le code retour décrit seulement le déroulement de la commande.
 
 Deux pièges sont traités explicitement. L'analyse des arguments de Python renvoie 2 par défaut sur une erreur d'usage, ce qu'une supervision lirait comme CRITICAL, et une exception non interceptée renvoie 1, lu comme WARNING. En mode monitoring, un gestionnaire d'erreurs central convertit les deux en code 3, avec un JSON dont `status` vaut UNKNOWN.
 
-Les codes 0 à 3 conviennent à Nagios, Icinga et Checkmk. Zabbix s'appuie sur la sortie standard et non sur ces codes : on y consomme le JSON, avec des éléments dépendants et des expressions JSONPath sur `status` et sur les compteurs de `summary`. L'option `--format json` seule fournit ce JSON avec un code 0 en cas de déroulement normal ; selon la version de Zabbix et le mode de collecte, un code non nul peut rendre l'élément non supporté, ce qui est à valider. Une ligne de texte au format des plugins Nagios, avec données de performance, n'est pas prévue en v1 ; elle serait ajoutée si des utilisateurs de Nagios la demandent.
+Les codes 0 à 3 conviennent à Nagios, Icinga et Checkmk. Zabbix s'appuie sur la sortie standard et non sur ces codes : on y consomme le JSON, avec des éléments dépendants et des expressions JSONPath sur `status` et sur les compteurs de `summary`. L'option `--format json` seule fournit ce JSON avec un code 0 en cas de déroulement normal. En cas d'échec, elle est respectée aussi : l'enveloppe ci-dessus part sur la sortie standard au lieu d'une ligne de texte sur la sortie d'erreur, mais le code retour reste celui du mode manuel (1 ou 2), pas celui de `--monitoring`. Selon la version de Zabbix et le mode de collecte, un code non nul peut rendre l'élément non supporté, ce qui est à valider. Une ligne de texte au format des plugins Nagios, avec données de performance, n'est pas prévue en v1 ; elle serait ajoutée si des utilisateurs de Nagios la demandent.
 
 ## Collecte des données et dégradation
 
@@ -378,7 +382,7 @@ L'objectif est de gérer plusieurs centaines de VMs, et plus de 1 000, sans que 
 - **Champs réduits** : l'API n'offre pas de sélection de champs : thin=true ne renvoie que l'identifiant et le nom, alors qu'un hôte pèse environ 214 champs dans la liste. L'outil ne garde en mémoire que les champs nécessaires, pas les réponses brutes (V1, V12).
 - **Aucun appel par VM hors de `host`** : jamais de boucle d'appels sur les VMs dans `summary`, `list` ou `content`. Les compteurs d'errata (installables et applicables), le statut des traces et la version de CV servie figurent dans la liste des hôtes (V1, V3, V6, V13) ; le nombre de VMs par version de CV s'en déduit. Si un champ n'est pas dans la liste (V1), l'indicateur correspondant est UNKNOWN et le README documente cette limite, plutôt que de multiplier les appels.
 - **Appels séquentiels** dans un seul fil d'exécution, sans parallélisme en v1, pour ne pas charger Katello ; à reconsidérer seulement si une mesure l'impose.
-- **Fiabilité** : délai maximal `timeout` par appel, et une seule nouvelle tentative sur erreur réseau ou réponse 5xx, jamais sur une réponse 4xx ni sur la réponse 500 d'une recherche refusée (« not recognized for searching »).
+- **Fiabilité** : délai maximal `timeout` par appel. Une seule nouvelle tentative (deux au total), limitée aux pannes transitoires : timeout, reset de connexion, et réponses HTTP 502/503/504. Jamais de nouvelle tentative sur un 4xx, sur un 5xx hors de cette liste, sur une connexion refusée, un échec DNS, une erreur TLS/certificat, ni sur la réponse 500 d'une recherche refusée (« not recognized for searching ») : ce sont des échecs déterministes, les retenter ne change rien.
 - **Pas de cache en v1** : chaque exécution donne un instantané fidèle. En monitoring, la fréquence se règle côté supervision.
 
 | Sous-commande | Appels API | Croissance avec le nombre de VMs |

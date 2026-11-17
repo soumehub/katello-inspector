@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "katello-inspector"
+version = "0.1.0"
+description = "Vue en lecture seule de l'etat des VMs et de la plateforme Katello"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "mypy"]
+
+[project.scripts]
+katello-inspector = "katello_inspector.cli:run"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+extend-exclude = ["tools"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+# mypy ne verifie plus de cible 3.9 (minimum 3.10) ; la compatibilite
+# d'execution 3.9 reste garantie par la matrice pytest en CI, pas par mypy.
+python_version = "3.10"
+strict = true
+packages = ["katello_inspector"]
+mypy_path = "src"

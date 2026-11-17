@@ -1,0 +1,7 @@
+{
+  "request": {"method": "GET", "path": "/api/hosts", "params": {"search": "bogus = 1"}},
+  "status": 500,
+  "kind": "search_rejected",
+  "elapsed_ms": 55,
+  "response": {"error": {"message": "Field 'bogus' not recognized for searching!"}}
+}
