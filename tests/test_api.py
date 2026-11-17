@@ -3,6 +3,8 @@ from __future__ import annotations
 import http.server
 import io
 import json
+import socket
+import ssl
 import threading
 import urllib.error
 import urllib.request
@@ -75,31 +77,112 @@ def test_get_success_parses_json() -> None:
     assert response.data == {"a": 1}
 
 
-def test_retry_once_on_network_error_then_success() -> None:
+def test_retry_on_raw_timeout_error() -> None:
     client = _client()
-    opener = _ScriptedOpener([urllib.error.URLError("panne reseau"), (200, b"{}")])
+    opener = _ScriptedOpener([TimeoutError("delai depasse"), (200, b"{}")])
     client._opener = opener
     response = client.get("/api/status")
     assert response.status == 200
     assert len(opener.calls) == 2
 
 
-def test_network_error_twice_raises_api_error() -> None:
+def test_retry_on_url_error_wrapping_a_timeout() -> None:
     client = _client()
-    opener = _ScriptedOpener([urllib.error.URLError("panne reseau")])
+    opener = _ScriptedOpener([urllib.error.URLError(TimeoutError("delai depasse")), (200, b"{}")])
+    client._opener = opener
+    response = client.get("/api/status")
+    assert response.status == 200
+    assert len(opener.calls) == 2
+
+
+def test_retry_on_connection_reset() -> None:
+    client = _client()
+    opener = _ScriptedOpener([ConnectionResetError("connexion reinitialisee"), (200, b"{}")])
+    client._opener = opener
+    response = client.get("/api/status")
+    assert response.status == 200
+    assert len(opener.calls) == 2
+
+
+def test_timeout_twice_raises_api_error() -> None:
+    client = _client()
+    opener = _ScriptedOpener([TimeoutError("delai depasse")])
     client._opener = opener
     with pytest.raises(ApiError):
         client.get("/api/status")
     assert len(opener.calls) == 2
 
 
-def test_retry_once_on_generic_5xx() -> None:
+def test_no_retry_on_connection_refused() -> None:
+    client = _client()
+    opener = _ScriptedOpener([urllib.error.URLError(ConnectionRefusedError("connexion refusee"))])
+    client._opener = opener
+    with pytest.raises(ApiError):
+        client.get("/api/status")
+    assert len(opener.calls) == 1
+
+
+def test_no_retry_on_dns_failure() -> None:
+    client = _client()
+    opener = _ScriptedOpener([urllib.error.URLError(socket.gaierror("hote introuvable"))])
+    client._opener = opener
+    with pytest.raises(ApiError):
+        client.get("/api/status")
+    assert len(opener.calls) == 1
+
+
+def test_no_retry_on_tls_certificate_error() -> None:
+    client = _client()
+    opener = _ScriptedOpener([urllib.error.URLError(ssl.SSLCertVerificationError("certificat invalide"))])
+    client._opener = opener
+    with pytest.raises(ApiError):
+        client.get("/api/status")
+    assert len(opener.calls) == 1
+
+
+def test_retry_on_502() -> None:
+    client = _client()
+    opener = _ScriptedOpener([(502, b"{}"), (200, b"{}")])
+    client._opener = opener
+    response = client.get("/api/hosts")
+    assert response.status == 200
+    assert len(opener.calls) == 2
+
+
+def test_retry_on_503() -> None:
     client = _client()
     opener = _ScriptedOpener([(503, b"{}"), (200, b"{}")])
     client._opener = opener
     response = client.get("/api/hosts")
     assert response.status == 200
     assert len(opener.calls) == 2
+
+
+def test_retry_on_504() -> None:
+    client = _client()
+    opener = _ScriptedOpener([(504, b"{}"), (200, b"{}")])
+    client._opener = opener
+    response = client.get("/api/hosts")
+    assert response.status == 200
+    assert len(opener.calls) == 2
+
+
+def test_no_retry_on_500() -> None:
+    client = _client()
+    opener = _ScriptedOpener([(500, b"{}")])
+    client._opener = opener
+    with pytest.raises(ApiError):
+        client.get("/api/hosts")
+    assert len(opener.calls) == 1
+
+
+def test_no_retry_on_501() -> None:
+    client = _client()
+    opener = _ScriptedOpener([(501, b"{}")])
+    client._opener = opener
+    with pytest.raises(ApiError):
+        client.get("/api/hosts")
+    assert len(opener.calls) == 1
 
 
 def test_no_retry_on_4xx() -> None:

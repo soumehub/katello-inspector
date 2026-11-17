@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import json
+import socket
 import ssl
 import urllib.error
 import urllib.parse
@@ -25,6 +26,23 @@ DEFAULT_MAX_PAGES = 10_000
 # Message observe sur /api/hosts (HTTP 500) et /foreman_tasks/api/tasks (HTTP 400)
 # pour un champ de recherche inconnu. Ne jamais retenter cette reponse.
 _UNSUPPORTED_SEARCH_MARKER = "not recognized for searching"
+
+# Retry limite aux pannes transitoires : timeout et reset de connexion.
+# Jamais sur une connexion refusee, un echec DNS ou une erreur TLS/certificat
+# (deterministes : retenter ne change rien et ne fait que perdre du temps).
+_RETRYABLE_NETWORK_ERRORS: tuple[type[BaseException], ...] = (socket.timeout, TimeoutError, ConnectionResetError)
+
+# Retry limite aux 5xx classiquement transitoires (passerelle/amont).
+_RETRYABLE_HTTP_STATUSES = (502, 503, 504)
+
+
+def _is_retryable_network_error(exc: BaseException) -> bool:
+    if isinstance(exc, urllib.error.HTTPError):
+        return False
+    if isinstance(exc, urllib.error.URLError):
+        reason = exc.reason
+        return isinstance(reason, BaseException) and isinstance(reason, _RETRYABLE_NETWORK_ERRORS)
+    return isinstance(exc, _RETRYABLE_NETWORK_ERRORS)
 
 
 class Response:
@@ -115,7 +133,11 @@ class BaseApiClient:
 
     Les sous-classes fournissent uniquement `_send`, qui renvoie un statut HTTP
     et un corps brut sans jamais lever d'exception pour un code d'erreur HTTP
-    (seules les pannes reseau levent une `OSError`, seul cas retente).
+    (seules les pannes reseau levent une `OSError`). Le retry (2 tentatives
+    maximum) est limite aux pannes transitoires : timeout, reset de connexion
+    et HTTP 502/503/504. Jamais sur une connexion refusee, un echec DNS, une
+    erreur TLS/certificat ou un 4xx/5xx non liste : ces echecs sont
+    deterministes, les retenter ne change rien.
     """
 
     def __init__(self, *, page_size: int = DEFAULT_PAGE_SIZE, max_pages: int = DEFAULT_MAX_PAGES) -> None:
@@ -139,6 +161,8 @@ class BaseApiClient:
             try:
                 status, body = self._send(path, query)
             except OSError as exc:
+                if not _is_retryable_network_error(exc):
+                    raise ApiError(f"erreur reseau sur {path} : {exc}") from exc
                 last_exc = exc
                 if attempt == 1:
                     continue
@@ -150,7 +174,7 @@ class BaseApiClient:
                     return Response(status, data, path)
                 if _is_unsupported_search(status, text):
                     raise UnsupportedSearchError(f"recherche non supportee sur {path}")
-                if status >= 500 and attempt == 1:
+                if status in _RETRYABLE_HTTP_STATUSES and attempt == 1:
                     last_exc = ApiError(f"erreur HTTP {status} sur {path}")
                     continue
                 raise ApiError(f"erreur HTTP {status} sur {path}")
