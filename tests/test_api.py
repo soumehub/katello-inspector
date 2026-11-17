@@ -52,9 +52,11 @@ class _ScriptedOpener:
     def __init__(self, script: list[Any]) -> None:
         self._script = script
         self.calls: list[str] = []
+        self.requests: list[urllib.request.Request] = []
 
     def open(self, req: urllib.request.Request, timeout: float | None = None) -> _FakeResponse:
         self.calls.append(req.full_url)
+        self.requests.append(req)
         index = min(len(self.calls) - 1, len(self._script) - 1)
         action = self._script[index]
         if isinstance(action, BaseException):
@@ -414,6 +416,22 @@ def test_base_url_must_have_a_hostname() -> None:
 def test_base_url_https_is_accepted() -> None:
     client = _client()
     assert client is not None
+
+
+def test_get_without_anonymous_sends_authorization_header() -> None:
+    client = _client()
+    opener = _ScriptedOpener([(200, b"{}")])
+    client._opener = opener
+    client.get("/api/status")
+    assert opener.requests[0].get_header("Authorization") is not None
+
+
+def test_get_anonymous_omits_authorization_header() -> None:
+    client = _client()
+    opener = _ScriptedOpener([(200, b"{}")])
+    client._opener = opener
+    client.get("/pulp/api/v3/status/", anonymous=True)
+    assert opener.requests[0].get_header("Authorization") is None
 
 
 def test_malformed_request_value_error_becomes_api_error() -> None:

@@ -151,15 +151,15 @@ class BaseApiClient:
         self._page_size = page_size
         self._max_pages = max_pages
 
-    def _send(self, path: str, params: Mapping[str, Any]) -> tuple[int, bytes]:
+    def _send(self, path: str, params: Mapping[str, Any], *, anonymous: bool = False) -> tuple[int, bytes]:
         raise NotImplementedError
 
-    def get(self, path: str, params: Mapping[str, Any] | None = None) -> Response:
+    def get(self, path: str, params: Mapping[str, Any] | None = None, *, anonymous: bool = False) -> Response:
         query = dict(params or {})
         last_exc: BaseException | None = None
         for attempt in (1, 2):
             try:
-                status, body = self._send(path, query)
+                status, body = self._send(path, query, anonymous=anonymous)
             except OSError as exc:
                 if not _is_retryable_network_error(exc):
                     raise ApiError(f"erreur reseau sur {path} : {exc}") from exc
@@ -253,12 +253,13 @@ class ApiClient(BaseApiClient):
         ctx = _build_ssl_context(ca_file=ca_file, insecure=insecure)
         self._opener = urllib.request.build_opener(_NoRedirectHandler(), urllib.request.HTTPSHandler(context=ctx))
 
-    def _send(self, path: str, params: Mapping[str, Any]) -> tuple[int, bytes]:
+    def _send(self, path: str, params: Mapping[str, Any], *, anonymous: bool = False) -> tuple[int, bytes]:
         qs = urllib.parse.urlencode(params, doseq=True) if params else ""
         url = self._base_url + path + (("?" + qs) if qs else "")
         req = urllib.request.Request(url, method="GET")
         req.add_header("Accept", "application/json")
-        req.add_header("Authorization", self._auth_header)
+        if not anonymous:
+            req.add_header("Authorization", self._auth_header)
         req.add_header("User-Agent", self._user_agent)
         try:
             with self._opener.open(req, timeout=self._timeout) as resp:
@@ -301,7 +302,7 @@ class FixtureClient(BaseApiClient):
             body = json.dumps(response).encode("utf-8") if response is not None else b""
             self._fixtures[_fixture_key(path, params)] = (status, body)
 
-    def _send(self, path: str, params: Mapping[str, Any]) -> tuple[int, bytes]:
+    def _send(self, path: str, params: Mapping[str, Any], *, anonymous: bool = False) -> tuple[int, bytes]:
         try:
             return self._fixtures[_fixture_key(path, params)]
         except KeyError:
