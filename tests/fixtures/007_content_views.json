@@ -1,0 +1,1584 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/katello/api/content_views",
+  "params": {
+   "organization_id": 1,
+   "per_page": 100
+  }
+ },
+ "status": 200,
+ "kind": "ok",
+ "elapsed_ms": 569,
+ "response": {
+  "total": 9,
+  "subtotal": 9,
+  "selectable": 9,
+  "page": 1,
+  "per_page": 100,
+  "error": null,
+  "search": null,
+  "sort": {
+   "by": "name",
+   "order": "asc"
+  },
+  "results": [
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 1,
+    "latest_version": "1.0",
+    "latest_version_id": 22,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": true,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     177
+    ],
+    "id": 13,
+    "name": "cv-app-corretto",
+    "label": "cv-app-corretto",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-10-21 19:30:44 UTC",
+    "updated_at": "2026-10-21 19:32:19 UTC",
+    "last_task": {
+     "id": "1102370a-2353-5c6a-ad07-8398373e809d",
+     "started_at": "2026-10-21 19:33:37 UTC",
+     "result": "success",
+     "last_sync_words": "26 days"
+    },
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 177,
+      "name": "corretto8-x86_64",
+      "label": "corretto8-x86_64",
+      "content_type": "yum"
+     }
+    ],
+    "versions": [
+     {
+      "id": 22,
+      "version": "1.0",
+      "published": "2026-10-21 19:32:19 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "26 days"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [],
+    "hosts": [
+     {
+      "id": 32,
+      "name": "vm04"
+     },
+     {
+      "id": 33,
+      "name": "vm03"
+     }
+    ],
+    "hostgroups": [],
+    "next_version": "2.0",
+    "last_published": "2026-10-21 19:32:19 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [],
+      "hosts": [
+       32,
+       33
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 1,
+    "latest_version": "1.0",
+    "latest_version_id": 17,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": null,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     114
+    ],
+    "id": 6,
+    "name": "cv-app-elasticsearch",
+    "label": "cv-app-elasticsearch",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-10-16 12:25:56 UTC",
+    "updated_at": "2026-10-16 15:14:06 UTC",
+    "last_task": {
+     "id": "1a7e3898-906a-5c5d-9abf-c07e0e9c604a",
+     "started_at": "2026-10-19 07:36:52 UTC",
+     "result": "success",
+     "last_sync_words": "29 days"
+    },
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 114,
+      "name": "elasticsearch8",
+      "label": "elasticsearch8",
+      "content_type": "yum"
+     }
+    ],
+    "versions": [
+     {
+      "id": 17,
+      "version": "1.0",
+      "published": "2026-10-16 15:14:06 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "about 1 month"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [],
+    "hosts": [
+     {
+      "id": 34,
+      "name": "vm16"
+     },
+     {
+      "id": 35,
+      "name": "vm17"
+     },
+     {
+      "id": 36,
+      "name": "vm15"
+     }
+    ],
+    "hostgroups": [],
+    "next_version": "2.0",
+    "last_published": "2026-10-16 15:14:06 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [],
+      "hosts": [
+       34,
+       35,
+       36
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 1,
+    "latest_version": "1.0",
+    "latest_version_id": 16,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": null,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     120
+    ],
+    "id": 7,
+    "name": "cv-app-nodejs",
+    "label": "cv-app-nodejs",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-10-16 12:25:57 UTC",
+    "updated_at": "2026-10-16 15:13:33 UTC",
+    "last_task": {
+     "id": "35ec9406-ce31-5c86-b1f6-8c5baae6d147",
+     "started_at": "2026-10-19 07:36:17 UTC",
+     "result": "success",
+     "last_sync_words": "29 days"
+    },
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 120,
+      "name": "nodejs24-x86_64",
+      "label": "nodejs24-x86_64",
+      "content_type": "yum"
+     }
+    ],
+    "versions": [
+     {
+      "id": 16,
+      "version": "1.0",
+      "published": "2026-10-16 15:13:33 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "about 1 month"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [],
+    "hosts": [
+     {
+      "id": 19,
+      "name": "vm14"
+     }
+    ],
+    "hostgroups": [],
+    "next_version": "2.0",
+    "last_published": "2026-10-16 15:13:33 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [],
+      "hosts": [
+       19
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 1,
+    "latest_version": "1.0",
+    "latest_version_id": 15,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": null,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     115
+    ],
+    "id": 5,
+    "name": "cv-app-postgresql",
+    "label": "cv-app-postgresql",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-10-16 12:25:54 UTC",
+    "updated_at": "2026-10-16 15:13:15 UTC",
+    "last_task": {
+     "id": "3f205c5d-ba18-5b7c-9384-a2522f69a946",
+     "started_at": "2026-10-19 07:35:37 UTC",
+     "result": "success",
+     "last_sync_words": "29 days"
+    },
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 115,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum"
+     }
+    ],
+    "versions": [
+     {
+      "id": 15,
+      "version": "1.0",
+      "published": "2026-10-16 15:13:15 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "about 1 month"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [],
+    "hosts": [
+     {
+      "id": 26,
+      "name": "vm19"
+     }
+    ],
+    "hostgroups": [],
+    "next_version": "2.0",
+    "last_published": "2026-10-16 15:13:15 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [],
+      "hosts": [
+       26
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 1,
+    "latest_version": "1.0",
+    "latest_version_id": 23,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": false,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     161,
+     162,
+     163
+    ],
+    "id": 12,
+    "name": "cv-app-tomcat",
+    "label": "cv-app-tomcat",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-10-21 19:30:42 UTC",
+    "updated_at": "2026-10-21 19:32:46 UTC",
+    "last_task": {
+     "id": "3e3d8b23-2b1f-5218-b7f4-4f137d929d78",
+     "started_at": "2026-10-21 19:34:20 UTC",
+     "result": "success",
+     "last_sync_words": "26 days"
+    },
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 161,
+      "name": "tomcat9",
+      "label": "tomcat9",
+      "content_type": "file"
+     },
+     {
+      "id": 162,
+      "name": "tomcat10",
+      "label": "tomcat10",
+      "content_type": "file"
+     },
+     {
+      "id": 163,
+      "name": "tomcat11",
+      "label": "tomcat11",
+      "content_type": "file"
+     }
+    ],
+    "versions": [
+     {
+      "id": 23,
+      "version": "1.0",
+      "published": "2026-10-21 19:32:46 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "26 days"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [],
+    "hosts": [],
+    "hostgroups": [],
+    "next_version": "2.0",
+    "last_published": "2026-10-21 19:32:46 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 1,
+    "latest_version": "1.0",
+    "latest_version_id": 14,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": null,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     119,
+     118
+    ],
+    "id": 4,
+    "name": "cv-infra-agents",
+    "label": "cv-infra-agents",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-10-16 12:25:53 UTC",
+    "updated_at": "2026-10-16 15:12:46 UTC",
+    "last_task": {
+     "id": "e0d5def3-d555-5b6e-82aa-b62af901f8cd",
+     "started_at": "2026-10-19 07:34:53 UTC",
+     "result": "success",
+     "last_sync_words": "29 days"
+    },
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 119,
+      "name": "foreman3.19-el9-x86_64",
+      "label": "foreman3_19-el9-x86_64",
+      "content_type": "yum"
+     },
+     {
+      "id": 118,
+      "name": "zabbix7-el9-x86_64",
+      "label": "zabbix7-el9-x86_64",
+      "content_type": "yum"
+     }
+    ],
+    "versions": [
+     {
+      "id": 14,
+      "version": "1.0",
+      "published": "2026-10-16 15:12:46 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "about 1 month"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [
+     {
+      "id": 1,
+      "name": "rocky9-library"
+     },
+     {
+      "id": 2,
+      "name": "rocky9-staging"
+     },
+     {
+      "id": 3,
+      "name": "rocky9-production"
+     }
+    ],
+    "hosts": [
+     {
+      "id": 19,
+      "name": "vm14"
+     },
+     {
+      "id": 26,
+      "name": "vm19"
+     },
+     {
+      "id": 27,
+      "name": "vm12"
+     },
+     {
+      "id": 28,
+      "name": "vm13"
+     },
+     {
+      "id": 30,
+      "name": "vm07"
+     },
+     {
+      "id": 31,
+      "name": "vm08"
+     },
+     {
+      "id": 32,
+      "name": "vm04"
+     },
+     {
+      "id": 33,
+      "name": "vm03"
+     },
+     {
+      "id": 34,
+      "name": "vm16"
+     },
+     {
+      "id": 35,
+      "name": "vm17"
+     },
+     {
+      "id": 36,
+      "name": "vm15"
+     },
+     {
+      "id": 40,
+      "name": "vm11"
+     },
+     {
+      "id": 41,
+      "name": "vm09"
+     },
+     {
+      "id": 43,
+      "name": "vm18"
+     },
+     {
+      "id": 45,
+      "name": "vm06"
+     }
+    ],
+    "hostgroups": [],
+    "next_version": "2.0",
+    "last_published": "2026-10-16 15:12:46 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [
+       1
+      ],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [
+       2
+      ],
+      "hosts": [
+       19,
+       30,
+       31,
+       43
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [
+       3
+      ],
+      "hosts": [
+       26,
+       27,
+       28,
+       32,
+       33,
+       34,
+       35,
+       36,
+       40,
+       41,
+       45
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 2,
+    "latest_version": "2.0",
+    "latest_version_id": 24,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": true,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     2,
+     1,
+     4,
+     3,
+     117
+    ],
+    "id": 3,
+    "name": "cv-os-rocky",
+    "label": "cv-os-rocky",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-10-16 12:25:51 UTC",
+    "updated_at": "2026-10-23 10:59:01 UTC",
+    "last_task": {
+     "id": "fd8a8d70-e226-5f8e-b83b-60ffc1ff7f0b",
+     "started_at": "2026-10-23 10:59:00 UTC",
+     "result": "success",
+     "last_sync_words": "24 days"
+    },
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 2,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum"
+     },
+     {
+      "id": 1,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum"
+     },
+     {
+      "id": 4,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum"
+     },
+     {
+      "id": 3,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum"
+     },
+     {
+      "id": 117,
+      "name": "epel-el9-x86_64",
+      "label": "epel-el9-x86_64",
+      "content_type": "yum"
+     }
+    ],
+    "versions": [
+     {
+      "id": 24,
+      "version": "2.0",
+      "published": "2026-10-23 10:59:01 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "24 days"
+     },
+     {
+      "id": 13,
+      "version": "1.0",
+      "published": "2026-10-16 15:11:45 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "about 1 month"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [
+     {
+      "id": 1,
+      "name": "rocky9-library"
+     },
+     {
+      "id": 2,
+      "name": "rocky9-staging"
+     },
+     {
+      "id": 3,
+      "name": "rocky9-production"
+     }
+    ],
+    "hosts": [
+     {
+      "id": 19,
+      "name": "vm14"
+     },
+     {
+      "id": 26,
+      "name": "vm19"
+     },
+     {
+      "id": 27,
+      "name": "vm12"
+     },
+     {
+      "id": 28,
+      "name": "vm13"
+     },
+     {
+      "id": 30,
+      "name": "vm07"
+     },
+     {
+      "id": 31,
+      "name": "vm08"
+     },
+     {
+      "id": 32,
+      "name": "vm04"
+     },
+     {
+      "id": 33,
+      "name": "vm03"
+     },
+     {
+      "id": 34,
+      "name": "vm16"
+     },
+     {
+      "id": 35,
+      "name": "vm17"
+     },
+     {
+      "id": 36,
+      "name": "vm15"
+     },
+     {
+      "id": 40,
+      "name": "vm11"
+     },
+     {
+      "id": 41,
+      "name": "vm09"
+     },
+     {
+      "id": 43,
+      "name": "vm18"
+     },
+     {
+      "id": 45,
+      "name": "vm06"
+     }
+    ],
+    "hostgroups": [],
+    "next_version": "3.0",
+    "last_published": "2026-10-23 10:59:01 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [
+       1
+      ],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [
+       2
+      ],
+      "hosts": [
+       19,
+       30,
+       31,
+       43
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [
+       3
+      ],
+      "hosts": [
+       26,
+       27,
+       28,
+       32,
+       33,
+       34,
+       35,
+       36,
+       40,
+       41,
+       45
+      ],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": true,
+    "version_count": 1,
+    "latest_version": "1.0",
+    "latest_version_id": 1,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": false,
+    "environment_ids": [
+     1
+    ],
+    "repository_ids": [],
+    "id": 1,
+    "name": "Default Organization View",
+    "label": "Default_Organization_View",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-08-14 11:56:29 UTC",
+    "updated_at": "2026-08-14 11:56:29 UTC",
+    "last_task": null,
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     }
+    ],
+    "repositories": [],
+    "versions": [
+     {
+      "id": 1,
+      "version": "1.0",
+      "published": "2026-08-14 11:56:29 UTC",
+      "description": null,
+      "environment_ids": [
+       1
+      ],
+      "filters_applied": null,
+      "published_at_words": "3 months"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [],
+    "hosts": [],
+    "hostgroups": [],
+    "next_version": "1.0",
+    "last_published": "2026-08-14 11:56:29 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   },
+   {
+    "composite": false,
+    "rolling": false,
+    "component_ids": [],
+    "duplicate_repositories_to_publish": [],
+    "default": false,
+    "version_count": 11,
+    "latest_version": "11.0",
+    "latest_version_id": 12,
+    "auto_publish": false,
+    "solve_dependencies": false,
+    "import_only": false,
+    "generated_for": "none",
+    "related_cv_count": 0,
+    "related_composite_cvs": [],
+    "filtered": false,
+    "needs_publish": null,
+    "environment_ids": [
+     1,
+     2,
+     3
+    ],
+    "repository_ids": [
+     1,
+     4,
+     3,
+     21,
+     2,
+     36,
+     46,
+     64,
+     63
+    ],
+    "id": 2,
+    "name": "Rocky 9",
+    "label": "Rocky_9",
+    "description": "",
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-08-20 13:11:46 UTC",
+    "updated_at": "2026-09-29 14:31:47 UTC",
+    "last_task": null,
+    "latest_version_environments": [
+     {
+      "id": 1,
+      "name": "Library",
+      "label": "Library"
+     },
+     {
+      "id": 2,
+      "name": "Staging",
+      "label": "Staging"
+     },
+     {
+      "id": 3,
+      "name": "Production",
+      "label": "Production"
+     }
+    ],
+    "repositories": [
+     {
+      "id": 1,
+      "name": "rhel-9-baseos",
+      "label": "rhel-9-baseos",
+      "content_type": "yum"
+     },
+     {
+      "id": 4,
+      "name": "rhel-9-crb",
+      "label": "rhel-9-crb",
+      "content_type": "yum"
+     },
+     {
+      "id": 3,
+      "name": "rhel-9-extras",
+      "label": "rhel-9-extras",
+      "content_type": "yum"
+     },
+     {
+      "id": 21,
+      "name": "Foreman Client 3.19 EL9",
+      "label": "Foreman_Client_3_19_EL9",
+      "content_type": "yum"
+     },
+     {
+      "id": 2,
+      "name": "rhel-9-appstream",
+      "label": "rhel-9-appstream",
+      "content_type": "yum"
+     },
+     {
+      "id": 36,
+      "name": "nodejs-24-el9",
+      "label": "nodejs-24-el9",
+      "content_type": "yum"
+     },
+     {
+      "id": 46,
+      "name": "zabbix-el9-x86_64",
+      "label": "zabbix-el9-x86_64",
+      "content_type": "yum"
+     },
+     {
+      "id": 64,
+      "name": "epel",
+      "label": "epel",
+      "content_type": "yum"
+     },
+     {
+      "id": 63,
+      "name": "pgsql18-el9-x86_64",
+      "label": "pgsql18-el9-x86_64",
+      "content_type": "yum"
+     }
+    ],
+    "versions": [
+     {
+      "id": 12,
+      "version": "11.0",
+      "published": "2026-09-29 14:31:47 UTC",
+      "description": "Description generique",
+      "environment_ids": [
+       1,
+       2,
+       3
+      ],
+      "filters_applied": false,
+      "published_at_words": "about 2 months"
+     },
+     {
+      "id": 11,
+      "version": "10.0",
+      "published": "2026-09-17 10:25:33 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "2 months"
+     },
+     {
+      "id": 10,
+      "version": "9.0",
+      "published": "2026-09-14 09:35:57 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "2 months"
+     },
+     {
+      "id": 9,
+      "version": "8.0",
+      "published": "2026-09-08 16:01:29 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "2 months"
+     },
+     {
+      "id": 8,
+      "version": "7.0",
+      "published": "2026-09-08 15:59:19 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "2 months"
+     },
+     {
+      "id": 7,
+      "version": "6.0",
+      "published": "2026-09-04 14:47:36 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "2 months"
+     },
+     {
+      "id": 6,
+      "version": "5.0",
+      "published": "2026-09-04 14:40:05 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "2 months"
+     },
+     {
+      "id": 5,
+      "version": "4.0",
+      "published": "2026-09-02 16:48:32 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "3 months"
+     },
+     {
+      "id": 4,
+      "version": "3.0",
+      "published": "2026-08-24 16:43:37 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "3 months"
+     },
+     {
+      "id": 3,
+      "version": "2.0",
+      "published": "2026-08-21 12:35:35 UTC",
+      "description": "Description generique",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "3 months"
+     },
+     {
+      "id": 2,
+      "version": "1.0",
+      "published": "2026-08-20 13:13:07 UTC",
+      "description": "",
+      "environment_ids": [],
+      "filters_applied": false,
+      "published_at_words": "3 months"
+     }
+    ],
+    "components": [],
+    "content_view_components": [],
+    "activation_keys": [],
+    "hosts": [
+     {
+      "id": 37,
+      "name": "vm05"
+     },
+     {
+      "id": 38,
+      "name": "vm01"
+     },
+     {
+      "id": 39,
+      "name": "vm02"
+     }
+    ],
+    "hostgroups": [
+     {
+      "id": 1,
+      "name": "groupe-13"
+     },
+     {
+      "id": 2,
+      "name": "groupe-19"
+     },
+     {
+      "id": 3,
+      "name": "groupe-14"
+     }
+    ],
+    "next_version": "12.0",
+    "last_published": "2026-09-29 14:31:47 UTC",
+    "environments": [
+     {
+      "id": 1,
+      "label": "Library",
+      "name": "Library",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [
+       1
+      ],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 2,
+      "label": "Staging",
+      "name": "Staging",
+      "activation_keys": [],
+      "hosts": [],
+      "hostgroups": [
+       2
+      ],
+      "permissions": {
+       "readable": true
+      }
+     },
+     {
+      "id": 3,
+      "label": "Production",
+      "name": "Production",
+      "activation_keys": [],
+      "hosts": [
+       37,
+       38,
+       39
+      ],
+      "hostgroups": [
+       3
+      ],
+      "permissions": {
+       "readable": true
+      }
+     }
+    ]
+   }
+  ]
+ }
+}

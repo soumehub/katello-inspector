@@ -1,0 +1,294 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/katello/api/environments",
+  "params": {
+   "organization_id": 1,
+   "per_page": 100
+  }
+ },
+ "status": 200,
+ "kind": "ok",
+ "elapsed_ms": 293,
+ "response": {
+  "total": 3,
+  "subtotal": 3,
+  "selectable": 3,
+  "page": 1,
+  "per_page": 100,
+  "error": null,
+  "search": null,
+  "sort": {
+   "by": "name",
+   "order": "asc"
+  },
+  "results": [
+   {
+    "library": true,
+    "registry_name_pattern": null,
+    "registry_unauthenticated_pull": false,
+    "id": 1,
+    "name": "Library",
+    "label": "Library",
+    "description": null,
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-08-14 11:56:29 UTC",
+    "updated_at": "2026-08-14 11:56:29 UTC",
+    "prior": null,
+    "successor": null,
+    "counts": {
+     "content_hosts": 0,
+     "content_views": 8,
+     "packages": 50870,
+     "module_streams": 79,
+     "errata": {
+      "security": 1820,
+      "bugfix": 3611,
+      "enhancement": 1081,
+      "total": 10218
+     },
+     "yum_repositories": 16,
+     "docker_repositories": 0,
+     "ostree_repositories": 0,
+     "products": 13,
+     "debs": 0,
+     "deb_repositories": 0
+    },
+    "permissions": {
+     "create_lifecycle_environments": false,
+     "view_lifecycle_environments": true,
+     "edit_lifecycle_environments": false,
+     "destroy_lifecycle_environments": false,
+     "promote_or_remove_content_views_to_environments": false
+    },
+    "content_views": [
+     {
+      "name": "Rocky 9",
+      "id": 2
+     },
+     {
+      "name": "cv-infra-agents",
+      "id": 4
+     },
+     {
+      "name": "cv-app-postgresql",
+      "id": 5
+     },
+     {
+      "name": "cv-app-nodejs",
+      "id": 7
+     },
+     {
+      "name": "cv-app-elasticsearch",
+      "id": 6
+     },
+     {
+      "name": "cv-app-corretto",
+      "id": 13
+     },
+     {
+      "name": "cv-app-tomcat",
+      "id": 12
+     },
+     {
+      "name": "cv-os-rocky",
+      "id": 3
+     }
+    ],
+    "capsules": [
+     {
+      "id": 1,
+      "name": "vm10",
+      "lifecycle_environments": [
+       {
+        "id": 1
+       },
+       {
+        "id": 2
+       },
+       {
+        "id": 3
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "library": false,
+    "registry_name_pattern": null,
+    "registry_unauthenticated_pull": false,
+    "id": 3,
+    "name": "Production",
+    "label": "Production",
+    "description": "Description generique",
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-08-20 13:09:55 UTC",
+    "updated_at": "2026-08-20 13:09:55 UTC",
+    "prior": {
+     "name": "Staging",
+     "id": 2
+    },
+    "successor": null,
+    "counts": {
+     "content_hosts": 31,
+     "content_views": 8
+    },
+    "permissions": {
+     "create_lifecycle_environments": false,
+     "view_lifecycle_environments": true,
+     "edit_lifecycle_environments": false,
+     "destroy_lifecycle_environments": false,
+     "promote_or_remove_content_views_to_environments": false
+    },
+    "content_views": [
+     {
+      "name": "Rocky 9",
+      "id": 2
+     },
+     {
+      "name": "cv-infra-agents",
+      "id": 4
+     },
+     {
+      "name": "cv-app-postgresql",
+      "id": 5
+     },
+     {
+      "name": "cv-app-nodejs",
+      "id": 7
+     },
+     {
+      "name": "cv-app-elasticsearch",
+      "id": 6
+     },
+     {
+      "name": "cv-app-corretto",
+      "id": 13
+     },
+     {
+      "name": "cv-app-tomcat",
+      "id": 12
+     },
+     {
+      "name": "cv-os-rocky",
+      "id": 3
+     }
+    ],
+    "capsules": [
+     {
+      "id": 1,
+      "name": "vm10",
+      "lifecycle_environments": [
+       {
+        "id": 1
+       },
+       {
+        "id": 2
+       },
+       {
+        "id": 3
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "library": false,
+    "registry_name_pattern": null,
+    "registry_unauthenticated_pull": false,
+    "id": 2,
+    "name": "Staging",
+    "label": "Staging",
+    "description": "Description generique",
+    "organization_id": 1,
+    "organization": {
+     "name": "MonOrganisation",
+     "label": "MonOrganisation",
+     "id": 1
+    },
+    "created_at": "2026-08-20 13:09:31 UTC",
+    "updated_at": "2026-08-20 13:09:31 UTC",
+    "prior": {
+     "name": "Library",
+     "id": 1
+    },
+    "successor": {
+     "name": "Production",
+     "id": 3
+    },
+    "counts": {
+     "content_hosts": 9,
+     "content_views": 8
+    },
+    "permissions": {
+     "create_lifecycle_environments": false,
+     "view_lifecycle_environments": true,
+     "edit_lifecycle_environments": false,
+     "destroy_lifecycle_environments": false,
+     "promote_or_remove_content_views_to_environments": false
+    },
+    "content_views": [
+     {
+      "name": "Rocky 9",
+      "id": 2
+     },
+     {
+      "name": "cv-infra-agents",
+      "id": 4
+     },
+     {
+      "name": "cv-app-postgresql",
+      "id": 5
+     },
+     {
+      "name": "cv-app-nodejs",
+      "id": 7
+     },
+     {
+      "name": "cv-app-elasticsearch",
+      "id": 6
+     },
+     {
+      "name": "cv-app-corretto",
+      "id": 13
+     },
+     {
+      "name": "cv-app-tomcat",
+      "id": 12
+     },
+     {
+      "name": "cv-os-rocky",
+      "id": 3
+     }
+    ],
+    "capsules": [
+     {
+      "id": 1,
+      "name": "vm10",
+      "lifecycle_environments": [
+       {
+        "id": 1
+       },
+       {
+        "id": 2
+       },
+       {
+        "id": 3
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}
