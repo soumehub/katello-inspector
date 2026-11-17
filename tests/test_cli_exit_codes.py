@@ -52,6 +52,35 @@ def test_not_implemented_command_monitoring(capsys: pytest.CaptureFixture[str]) 
     assert payload["status"] == "UNKNOWN"
 
 
+def test_error_envelope_has_same_keys_as_normal_envelope(capsys: pytest.CaptureFixture[str]) -> None:
+    code = main(["--monitoring", "list"])
+    assert code == 3
+    payload = json.loads(capsys.readouterr().out.strip())
+    assert set(payload.keys()) == {
+        "schema_version",
+        "tool",
+        "generated_at",
+        "command",
+        "server",
+        "status",
+        "data",
+        "unknown",
+        "error",
+    }
+    assert payload["command"] == "list"
+    assert payload["data"] == {}
+    assert payload["error"]
+
+
+def test_error_envelope_reports_known_server_info(capsys: pytest.CaptureFixture[str]) -> None:
+    code = main(
+        ["--monitoring", "list", "--url", "https://katello.example.com", "--org", "MonOrg"]
+    )
+    assert code == 3
+    payload = json.loads(capsys.readouterr().out.strip())
+    assert payload["server"] == {"url": "https://katello.example.com", "organization": "MonOrg"}
+
+
 def test_version_command_success_manual(capsys: pytest.CaptureFixture[str]) -> None:
     fixtures_dir = str(FIXTURES_DIR / "version_ok")
     code = main(["version", "--fixtures", fixtures_dir])

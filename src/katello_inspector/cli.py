@@ -205,17 +205,41 @@ def _cmd_version(args: argparse.Namespace) -> int:
     return 0
 
 
-def _report_failure(message: str, *, monitoring: bool, manual_code: int) -> int:
-    print(f"katello-inspector : {message}", file=sys.stderr)
-    if not monitoring:
-        return manual_code
-    envelope = {
+def _server_block_from_args(args: argparse.Namespace | None) -> dict[str, Any]:
+    if args is None:
+        return {"url": None, "organization": None}
+    return {"url": getattr(args, "url", None), "organization": getattr(args, "org", None)}
+
+
+def _failure_envelope(message: str, *, command: str | None, server: dict[str, Any]) -> dict[str, Any]:
+    # Memes cles que l'enveloppe normale (cf. _build_envelope) : un
+    # consommateur JSONPath en mode monitoring ne doit jamais rencontrer une
+    # forme differente parce que la commande a echoue.
+    return {
         "schema_version": SCHEMA_VERSION,
         "tool": {"name": "katello-inspector", "version": __version__},
         "generated_at": _now_iso(),
+        "command": command,
+        "server": server,
         "status": "UNKNOWN",
+        "data": {},
         "unknown": [{"indicator": "tool", "reason": message}],
+        "error": message,
     }
+
+
+def _report_failure(
+    message: str,
+    *,
+    monitoring: bool,
+    manual_code: int,
+    command: str | None = None,
+    server: dict[str, Any] | None = None,
+) -> int:
+    print(f"katello-inspector : {message}", file=sys.stderr)
+    if not monitoring:
+        return manual_code
+    envelope = _failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
     print(json.dumps(envelope, ensure_ascii=False))
     return 3
 
@@ -231,17 +255,21 @@ def main(argv: list[str] | None = None) -> int:
         return _report_failure(str(exc), monitoring=monitoring_hint, manual_code=2)
 
     monitoring = bool(getattr(args, "monitoring", False))
+    command = getattr(args, "command", None)
+    server = _server_block_from_args(args)
 
     try:
         return int(args.func(args))
     except UsageError as exc:
-        return _report_failure(str(exc), monitoring=monitoring, manual_code=2)
+        return _report_failure(str(exc), monitoring=monitoring, manual_code=2, command=command, server=server)
     except ApiError as exc:
-        return _report_failure(str(exc), monitoring=monitoring, manual_code=1)
+        return _report_failure(str(exc), monitoring=monitoring, manual_code=1, command=command, server=server)
     except InspectorError as exc:
-        return _report_failure(str(exc), monitoring=monitoring, manual_code=1)
+        return _report_failure(str(exc), monitoring=monitoring, manual_code=1, command=command, server=server)
     except Exception as exc:  # garde-fou : jamais de code retour non maitrise
-        return _report_failure(f"erreur inattendue : {exc}", monitoring=monitoring, manual_code=1)
+        return _report_failure(
+            f"erreur inattendue : {exc}", monitoring=monitoring, manual_code=1, command=command, server=server
+        )
 
 
 def run() -> None:
