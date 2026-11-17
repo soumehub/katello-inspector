@@ -13,7 +13,7 @@ import argparse
 import datetime as dt
 import json
 import sys
-from typing import Any, Callable
+from typing import Any, Callable, NoReturn
 
 from . import __version__
 from .api import ApiClient, BaseApiClient, FixtureClient
@@ -57,8 +57,8 @@ def _build_global_parent() -> _StrictArgumentParser:
     return parent
 
 
-def _not_implemented(name: str) -> Callable[[argparse.Namespace], int]:
-    def _run(args: argparse.Namespace) -> int:
+def _not_implemented(name: str) -> Callable[[argparse.Namespace], NoReturn]:
+    def _run(args: argparse.Namespace) -> NoReturn:
         raise InspectorError(f"sous-commande '{name}' pas encore implementee")
 
     return _run
