@@ -42,6 +42,24 @@ def _is_unsupported_search(status: int, text: str) -> bool:
     return status in (400, 500) and _UNSUPPORTED_SEARCH_MARKER in text.lower()
 
 
+def _parse_json_object(text: str, path: str) -> dict[str, Any] | None:
+    """Decode un corps JSON en objet, jamais une exception brute ni le corps lui-meme.
+
+    Tous les endpoints utilises renvoient soit rien, soit un objet a la
+    racine : une liste, une chaine ou un nombre a la racine est une reponse
+    inattendue, traitee comme une erreur plutot que transmise telle quelle.
+    """
+    if not text:
+        return None
+    try:
+        data = json.loads(text)
+    except ValueError as exc:
+        raise ApiError(f"reponse JSON invalide sur {path}") from exc
+    if data is not None and not isinstance(data, dict):
+        raise ApiError(f"reponse JSON inattendue sur {path} (racine de type {type(data).__name__})")
+    return data
+
+
 class _NoRedirectHandler(urllib.request.HTTPRedirectHandler):
     """Ne suit jamais de redirection, quelle que soit sa cible.
 
@@ -115,7 +133,7 @@ class BaseApiClient:
             else:
                 text = body.decode("utf-8", "replace") if body else ""
                 if status < 400:
-                    data = json.loads(text) if text else None
+                    data = _parse_json_object(text, path)
                     return Response(status, data, path)
                 if _is_unsupported_search(status, text):
                     raise UnsupportedSearchError(f"recherche non supportee sur {path}")

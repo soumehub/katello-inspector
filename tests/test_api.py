@@ -173,6 +173,41 @@ def test_count_uses_subtotal_without_downloading_results() -> None:
     assert client.count("/api/hosts") == 42
 
 
+def test_invalid_json_body_becomes_api_error() -> None:
+    client = _client()
+    client._opener = _ScriptedOpener([(200, b"ceci n'est pas du json")])
+    with pytest.raises(ApiError):
+        client.get("/api/status")
+
+
+def test_unexpected_json_root_list_becomes_api_error() -> None:
+    client = _client()
+    client._opener = _ScriptedOpener([(200, b"[1, 2, 3]")])
+    with pytest.raises(ApiError):
+        client.get("/api/status")
+
+
+def test_unexpected_json_root_scalar_becomes_api_error() -> None:
+    client = _client()
+    client._opener = _ScriptedOpener([(200, b"42")])
+    with pytest.raises(ApiError):
+        client.get("/api/status")
+
+
+def test_null_json_root_is_treated_as_empty() -> None:
+    client = _client()
+    client._opener = _ScriptedOpener([(200, b"null")])
+    response = client.get("/api/status")
+    assert response.data is None
+
+
+def test_empty_body_is_treated_as_empty() -> None:
+    client = _client()
+    client._opener = _ScriptedOpener([(200, b"")])
+    response = client.get("/api/status")
+    assert response.data is None
+
+
 def test_redirect_handler_refuses_same_host_redirect() -> None:
     handler = _NoRedirectHandler()
     req = urllib.request.Request("https://katello.example.com/api/status")
