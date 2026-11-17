@@ -438,3 +438,16 @@ def test_fixture_client_replays_search_rejected_500() -> None:
     client = FixtureClient(FIXTURES_DIR / "search_rejected")
     with pytest.raises(UnsupportedSearchError):
         client.get("/api/hosts", {"search": "bogus = 1"})
+
+
+def test_fixture_client_rejects_non_object_root(tmp_path: Path) -> None:
+    (tmp_path / "bad.json").write_text("[1, 2, 3]", encoding="utf-8")
+    with pytest.raises(ApiError):
+        FixtureClient(tmp_path)
+
+
+def test_fixture_client_rejects_non_integer_status(tmp_path: Path) -> None:
+    doc = {"request": {"path": "/api/status", "params": {}}, "status": "200", "response": {}}
+    (tmp_path / "bad.json").write_text(json.dumps(doc), encoding="utf-8")
+    with pytest.raises(ApiError):
+        FixtureClient(tmp_path)

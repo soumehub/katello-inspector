@@ -289,10 +289,14 @@ class FixtureClient(BaseApiClient):
         for entry in sorted(Path(directory).glob("*.json")):
             with entry.open("r", encoding="utf-8") as fh:
                 doc = json.load(fh)
+            if not isinstance(doc, dict):
+                raise ApiError(f"fixture malformee (racine de type {type(doc).__name__}) : {entry}")
             request = doc.get("request", {})
             path = request.get("path", "")
             params = request.get("params", {}) or {}
             status = doc.get("status", 200)
+            if isinstance(status, bool) or not isinstance(status, int):
+                raise ApiError(f"fixture malformee (status non entier) : {entry}")
             response = doc.get("response")
             body = json.dumps(response).encode("utf-8") if response is not None else b""
             self._fixtures[_fixture_key(path, params)] = (status, body)
