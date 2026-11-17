@@ -233,15 +233,22 @@ def _report_failure(
     *,
     monitoring: bool,
     manual_code: int,
+    output_format: str = "text",
     command: str | None = None,
     server: dict[str, Any] | None = None,
 ) -> int:
-    print(f"katello-inspector : {message}", file=sys.stderr)
-    if not monitoring:
+    if monitoring:
+        print(f"katello-inspector : {message}", file=sys.stderr)
+        envelope = _failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
+        print(json.dumps(envelope, ensure_ascii=False))
+        return 3
+    if output_format == "json":
+        # JSON sur stdout seulement : pas de ligne de log en double sur stderr.
+        envelope = _failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
+        print(json.dumps(envelope, ensure_ascii=False))
         return manual_code
-    envelope = _failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
-    print(json.dumps(envelope, ensure_ascii=False))
-    return 3
+    print(f"katello-inspector : {message}", file=sys.stderr)
+    return manual_code
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -252,23 +259,39 @@ def main(argv: list[str] | None = None) -> int:
         parser = build_parser()
         args = parser.parse_args(raw_argv)
     except UsageError as exc:
+        # Une erreur d'usage argparse (option inconnue, sous-commande
+        # manquante...) reste en texte hors monitoring, meme si --format
+        # json a ete demande : a ce stade args n'existe pas encore, et le
+        # format demande n'est pas fiable (c'est justement le parsing qui a
+        # echoue).
         return _report_failure(str(exc), monitoring=monitoring_hint, manual_code=2)
 
     monitoring = bool(getattr(args, "monitoring", False))
+    output_format = getattr(args, "format", "text")
     command = getattr(args, "command", None)
     server = _server_block_from_args(args)
 
     try:
         return int(args.func(args))
     except UsageError as exc:
-        return _report_failure(str(exc), monitoring=monitoring, manual_code=2, command=command, server=server)
+        return _report_failure(
+            str(exc), monitoring=monitoring, manual_code=2, output_format=output_format, command=command,
+            server=server,
+        )
     except ApiError as exc:
-        return _report_failure(str(exc), monitoring=monitoring, manual_code=1, command=command, server=server)
+        return _report_failure(
+            str(exc), monitoring=monitoring, manual_code=1, output_format=output_format, command=command,
+            server=server,
+        )
     except InspectorError as exc:
-        return _report_failure(str(exc), monitoring=monitoring, manual_code=1, command=command, server=server)
+        return _report_failure(
+            str(exc), monitoring=monitoring, manual_code=1, output_format=output_format, command=command,
+            server=server,
+        )
     except Exception as exc:  # garde-fou : jamais de code retour non maitrise
         return _report_failure(
-            f"erreur inattendue : {exc}", monitoring=monitoring, manual_code=1, command=command, server=server
+            f"erreur inattendue : {exc}", monitoring=monitoring, manual_code=1, output_format=output_format,
+            command=command, server=server,
         )
 
 

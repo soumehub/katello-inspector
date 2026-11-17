@@ -116,6 +116,36 @@ def test_version_format_json_manual_mode_still_returns_zero(capsys: pytest.Captu
     assert payload["status"] == "UNKNOWN"
 
 
+def test_format_json_respected_on_error_in_manual_mode(capsys: pytest.CaptureFixture[str]) -> None:
+    code = main(["list", "--format", "json"])
+    assert code == 1
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    payload = json.loads(captured.out.strip())
+    assert payload["status"] == "UNKNOWN"
+    assert payload["command"] == "list"
+    assert payload["error"]
+
+
+def test_format_equals_json_respected_on_error(capsys: pytest.CaptureFixture[str]) -> None:
+    code = main(["list", "--format=json"])
+    assert code == 1
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    payload = json.loads(captured.out.strip())
+    assert payload["status"] == "UNKNOWN"
+
+
+def test_usage_error_from_argparse_stays_text_even_with_format_json(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    code = main(["list", "--format", "json", "--bogus-option"])
+    assert code == 2
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "katello-inspector :" in captured.err
+
+
 def test_insecure_flag_reported_in_json_envelope(capsys: pytest.CaptureFixture[str]) -> None:
     fixtures_dir = str(FIXTURES_DIR / "version_ok")
     main(["version", "--fixtures", fixtures_dir, "--format", "json", "--insecure"])
