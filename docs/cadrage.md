@@ -210,7 +210,7 @@ Une VM n'a pas sa propre version de CV : elle reçoit celle qui est déployée d
 | Profil de paquets (V4) | plus ancien que `profile_days` | — | VM sans données de contenu | toujours en v1 : aucune date exposée par l'API (V4) |
 | Errata security installables (V3) | au moins `security_warn` | au moins `security_crit` | VM sans données de contenu, ou en build | compteurs absents |
 | Retard de CV de l'environnement | attente d'au moins `cv_lag_warn_days` | attente d'au moins `cv_lag_crit_days` | environnement ou CV avec `cv_lag_check = false`, CV rolling | date de publication absente |
-| Traces : reboot ou service à redémarrer (V13) | au moins 1 trace | — | VM en build | endpoint ou champ indisponible |
+| Traces : reboot ou service à redémarrer (V13) | au moins 1 trace | — | VM sans données de contenu, ou en build | endpoint ou champ indisponible |
 | Build (V14) | en build depuis plus de `build_stuck_hours` | — | VM hors build | toujours en v1 (V14) : durée non exposée, la VM est seulement signalée « en build », sans statut |
 
 Aucune date de profil de paquets n'est exposée (V4) : les compteurs d'errata ne sont donc datés que par le check-in, et l'outil le dit dans sa sortie. Le statut global de Foreman n'est pas utilisé, car il agrège des sous-statuts de façon peu lisible (un hôte à l'état « Error » alors que le détail affiché ne mentionne que « Build: Installed ») : l'outil lit directement les statuts d'errata, de traces et de build.
@@ -242,6 +242,7 @@ L'espace disque de Pulp vient de `/pulp/api/v3/status/`, hors API Foreman et Kat
 4. Un élément dont tous les indicateurs sont N/A est lui-même N/A et exclu des agrégats parents ; `summary` compte ces éléments à part.
 5. Le statut d'une commande est le pire statut des éléments évalués. Si aucun élément n'a pu être évalué (liste vide, tout en N/A), le statut est UNKNOWN : une supervision ne doit pas annoncer un état sain quand rien n'a été examiné.
 6. Les colonnes d'information (errata hors security, applicables non installables, version déployée) n'entrent dans aucun statut.
+7. Le profil de paquets (V4) et la durée de build (V14) sont structurellement indisponibles en v1 : affichés avec leur raison (« ? » ou « en build »), comptés une seule fois dans `unknown` au niveau de la commande (jamais répétés par VM), mais **exclus** du calcul du statut d'une VM. Seuls le check-in, les errata security installables, le retard de CV et les traces entrent dans ce calcul.
 
 ### Synthèse de conformité par Lifecycle Environment
 
@@ -258,6 +259,8 @@ Elle est ajoutée comme option `--by-lce` de `summary`, pas comme sous-commande 
 | Données obsolètes | VMs dont le check-in ou le profil de paquets dépasse son seuil |
 | Attente de CV | Plus longue attente d'une version non promue dans cet environnement, en jours |
 | Statut | Pire statut des VMs de l'environnement |
+
+Une VM est rattachée à chaque LCE où elle a au moins un couple (CV, environnement) : dans le cas normal elle n'en a qu'un. Si elle en avait plusieurs (cas non observé, non exclu par l'API), elle compterait dans chacune des lignes correspondantes : la somme des VMs sur toutes les lignes peut alors dépasser le total du parc. `Dont critiques` reste toujours `?` en v1 : la sévérité par erratum vient de l'endpoint par hôte, hors de `summary` (pas d'appel par VM).
 
 Exemple illustratif de sortie en mode manuel :
 
