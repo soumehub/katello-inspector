@@ -7,6 +7,7 @@ construit la configuration et le client puis appelle `run`.
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 from typing import Any
 
@@ -136,7 +137,8 @@ def build_data(
     ordered_names = [e.name for e in order_environments_by_promotion(environments)]
     versions_by_cv = collect_content_view_versions(client, org.id)
     hosts = list(collect_hosts(client, org.id, page_size=config.page_size))
-    evaluated = [evaluate_host(h, versions_by_cv, config) for h in hosts]
+    now = dt.datetime.now(dt.timezone.utc)
+    evaluated = [evaluate_host(h, versions_by_cv, config, now=now) for h in hosts]
 
     fleet = compute_fleet_summary(evaluated)
     fleet_worst = worst_of(

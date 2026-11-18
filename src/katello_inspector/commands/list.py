@@ -37,7 +37,9 @@ def _latest_version(versions: list[ContentViewVersion]) -> str | None:
     return chosen.version
 
 
-def _host_dict(eh: EvaluatedHost, versions_by_cv: dict[int, list[ContentViewVersion]]) -> dict[str, Any]:
+def _host_dict(
+    eh: EvaluatedHost, versions_by_cv: dict[int, list[ContentViewVersion]], *, now: dt.datetime
+) -> dict[str, Any]:
     host = eh.host
     environments = sorted(eh.environments)
     lifecycle_environment = ", ".join(environments) if environments else None
@@ -68,7 +70,7 @@ def _host_dict(eh: EvaluatedHost, versions_by_cv: dict[int, list[ContentViewVers
         "content_views": content_views,
         "freshness": {
             "last_checkin": host.last_checkin.isoformat() if host.last_checkin else None,
-            "checkin_age_days": None,
+            "checkin_age_days": (now - host.last_checkin).days if host.last_checkin else None,
             "package_profile_age_days": None,
         },
         "errata": {
@@ -103,9 +105,10 @@ def build_data(
         raw=getattr(args, "search", None),
     )
 
+    now = dt.datetime.now(dt.timezone.utc)
     versions_by_cv = collect_content_view_versions(client, org.id)
     hosts = list(collect_hosts(client, org.id, search=search, page_size=config.page_size))
-    evaluated = [evaluate_host(h, versions_by_cv, config) for h in hosts]
+    evaluated = [evaluate_host(h, versions_by_cv, config, now=now) for h in hosts]
 
     if getattr(args, "problems_only", False):
         evaluated = [eh for eh in evaluated if eh.status not in ("OK", "N/A")]
@@ -115,7 +118,7 @@ def build_data(
 
     unknown = collect_unknown_entries(evaluated)
     status = worst_of([eh.status for eh in evaluated if eh.status != "N/A"] or ["UNKNOWN"])
-    data = [_host_dict(eh, versions_by_cv) for eh in evaluated]
+    data = [_host_dict(eh, versions_by_cv, now=now) for eh in evaluated]
     return data, status, unknown
 
 
