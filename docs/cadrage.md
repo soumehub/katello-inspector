@@ -49,7 +49,7 @@ L'outil expose quatre sous-commandes, de la plus synthétique à la plus détail
 | Sous-commande | Rôle | Contenu |
 | --- | --- | --- |
 | `summary` | Santé globale, un écran | Compteurs plateforme (ping, tâches en erreur, disque Pulp) et compteurs parc : total, VMs par état de mise à jour, données obsolètes, errata security installables, reboot requis, environnements en retard de CV, VMs en build. Avec `--by-lce` : synthèse de conformité par Lifecycle Environment |
-| `list` | Tableau des VMs | Nom, LCE, CV et version déployée (une VM peut avoir plusieurs CV), dernier check-in, errata security installables, reboot, état de mise à jour, statut |
+| `list` | Tableau des VMs | Nom, LCE, CV et version déployée (une VM peut avoir plusieurs CV), dernier check-in, errata security installables, reboot, état de mise à jour, statut. En mode texte, une VM multi-CV n'affiche dans sa colonne CV que celle dont l'attente de promotion est la plus longue (`+N` pour les autres) ; le JSON liste toutes les CV. |
 | `content` | Cohérence du contenu | Par produit et repo : dernière sync et résultat ; par CV : dernière version publiée, version déployée par LCE et durée d'attente de la plus récente, contenu synchronisé non publié ; nombre de VMs par version |
 | `host NOM` | Détail d'une VM | Identité, fraîcheur des données, activation key, repos activés, errata disponibles, applicables et installables détaillés, paquets upgradables, traces, derniers jobs |
 | `version` | Version de l'outil | Version d'inspector et version de Foreman et de Katello, lues via l'API |
@@ -74,7 +74,7 @@ L'outil expose quatre sous-commandes, de la plus synthétique à la plus détail
 
 | Option | Effet |
 | --- | --- |
-| `--lce NOM`, `--cv NOM`, `--hostgroup NOM` | Filtres sur l'environnement, la vue de contenu et le groupe d'hôtes |
+| `--lce NOM`, `--cv NOM`, `--hostgroup NOM` | Filtres sur l'environnement, la vue de contenu et le groupe d'hôtes. `--hostgroup` prend le **nom** du groupe (champ `hostgroup`), jamais son chemin complet : `hostgroup_fullname` et `hostgroup_title` n'ont trouvé aucun hôte avec le nom seul lors de la vérification. |
 | `--problems-only` | N'affiche que les VMs dont le statut n'est pas OK |
 | `--search EXPR` | Expression de recherche Foreman transmise telle quelle |
 | `--sort COLONNE` | Tri (nom, check-in, errata) |
@@ -210,7 +210,7 @@ Une VM n'a pas sa propre version de CV : elle reçoit celle qui est déployée d
 | Profil de paquets (V4) | plus ancien que `profile_days` | — | VM sans données de contenu | toujours en v1 : aucune date exposée par l'API (V4) |
 | Errata security installables (V3) | au moins `security_warn` | au moins `security_crit` | VM sans données de contenu, ou en build | compteurs absents |
 | Retard de CV de l'environnement | attente d'au moins `cv_lag_warn_days` | attente d'au moins `cv_lag_crit_days` | environnement ou CV avec `cv_lag_check = false`, CV rolling | date de publication absente |
-| Traces : reboot ou service à redémarrer (V13) | au moins 1 trace | — | VM en build | endpoint ou champ indisponible |
+| Traces : reboot ou service à redémarrer (V13) | au moins 1 trace | — | VM sans données de contenu, ou en build | endpoint ou champ indisponible |
 | Build (V14) | en build depuis plus de `build_stuck_hours` | — | VM hors build | toujours en v1 (V14) : durée non exposée, la VM est seulement signalée « en build », sans statut |
 
 Aucune date de profil de paquets n'est exposée (V4) : les compteurs d'errata ne sont donc datés que par le check-in, et l'outil le dit dans sa sortie. Le statut global de Foreman n'est pas utilisé, car il agrège des sous-statuts de façon peu lisible (un hôte à l'état « Error » alors que le détail affiché ne mentionne que « Build: Installed ») : l'outil lit directement les statuts d'errata, de traces et de build.
@@ -242,6 +242,7 @@ L'espace disque de Pulp vient de `/pulp/api/v3/status/`, hors API Foreman et Kat
 4. Un élément dont tous les indicateurs sont N/A est lui-même N/A et exclu des agrégats parents ; `summary` compte ces éléments à part.
 5. Le statut d'une commande est le pire statut des éléments évalués. Si aucun élément n'a pu être évalué (liste vide, tout en N/A), le statut est UNKNOWN : une supervision ne doit pas annoncer un état sain quand rien n'a été examiné.
 6. Les colonnes d'information (errata hors security, applicables non installables, version déployée) n'entrent dans aucun statut.
+7. Le profil de paquets (V4) et la durée de build (V14) sont structurellement indisponibles en v1 : affichés avec leur raison (« ? » ou « en build »), comptés une seule fois dans `unknown` au niveau de la commande (jamais répétés par VM), mais **exclus** du calcul du statut d'une VM. Seuls le check-in, les errata security installables, le retard de CV et les traces entrent dans ce calcul.
 
 ### Synthèse de conformité par Lifecycle Environment
 
@@ -258,6 +259,8 @@ Elle est ajoutée comme option `--by-lce` de `summary`, pas comme sous-commande 
 | Données obsolètes | VMs dont le check-in ou le profil de paquets dépasse son seuil |
 | Attente de CV | Plus longue attente d'une version non promue dans cet environnement, en jours |
 | Statut | Pire statut des VMs de l'environnement |
+
+Une VM est rattachée à chaque LCE où elle a au moins un couple (CV, environnement) : dans le cas normal elle n'en a qu'un. Si elle en avait plusieurs (cas non observé, non exclu par l'API), elle compterait dans chacune des lignes correspondantes : la somme des VMs sur toutes les lignes peut alors dépasser le total du parc. `Dont critiques` reste toujours `?` en v1 : la sévérité par erratum vient de l'endpoint par hôte, hors de `summary` (pas d'appel par VM).
 
 Exemple illustratif de sortie en mode manuel :
 
@@ -320,6 +323,42 @@ Si l'outil lui-même échoue (erreur de configuration, d'API ou inattendue, en m
 
 Un champ dont la source API n'est pas confirmée (points V) vaut `null` et son indicateur passe en UNKNOWN ; il n'est jamais remplacé par une valeur par défaut. Le champ `content_source` est rempli dès la v1 pour que la prise en charge des capsules n'oblige pas à changer le schéma. La date du profil de paquets est null, car l'API n'expose aucune date (V4).
 
+### Contenu de `data` pour `summary`
+
+```json
+{
+  "platform": {
+    "ping": { "status": "OK", "services": { "candlepin": "ok", "pulp3": "ok", "pulp3_content": "ok" } },
+    "tasks": {
+      "status": "CRIT",
+      "failing_or_paused_24h": 3,
+      "tasks": [
+        { "label": "Actions::Katello::Repository::Sync", "state": "stopped", "result": "error", "started_at": "2026-11-16T01:00:19Z" }
+      ],
+      "tasks_omitted": 0
+    },
+    "pulp_disk": { "status": "OK", "free_pct": 64.02, "total_bytes": 321965260800, "used_bytes": 115839705088, "free_bytes": 206125555712 }
+  },
+  "fleet": {
+    "total": 19,
+    "evaluated": 18,
+    "na": 1,
+    "status_counts": { "OK": 10, "WARN": 5, "CRIT": 2, "UNKNOWN": 1 },
+    "update_state_counts": { "up_to_date": 8, "up_to_date_content_pending": 4, "outdated": 5, "unverifiable": 1, "n/a": 1 },
+    "stale_data": 1,
+    "security_installable_total": 14,
+    "reboot_required": 2,
+    "in_build": 1,
+    "cv_lag_environments": 1
+  },
+  "by_lce": null
+}
+```
+
+`platform.tasks.status` : CRIT si au moins une des tâches en erreur ou en pause des dernières 24h porte un libellé `Actions::Katello::Repository::Sync`, `Actions::Katello::ContentView::Publish`, `Actions::Katello::ContentView::Promote` ou `Actions::Katello::SyncPlan::Run` ; sinon WARN si `failing_or_paused_24h > 0` ; sinon OK. `failing_or_paused_24h` est le total renvoyé par l'API (`subtotal`), pas le nombre d'éléments listés : `tasks` est plafonné à 50 lignes, `tasks_omitted` donne le nombre de lignes au-delà de ce plafond. `platform.pulp_disk` est lu sans authentification (voir plus haut).
+
+`fleet.security_installable_total` et `fleet.reboot_required` excluent les VMs N/A et en build (ces indicateurs y sont eux-mêmes N/A). `fleet.cv_lag_environments` est le nombre de Lifecycle Environments distincts ayant au moins un couple (CV, environnement) en WARN ou CRIT. `by_lce` vaut `null` sans `--by-lce` ; avec l'option, c'est la liste décrite ci-dessous.
+
 ### Contenu de `data.by_lce` pour `summary --by-lce`
 
 ```json
@@ -327,10 +366,11 @@ Un champ dont la source API n'est pas confirmée (points V) vaut `null` et son i
   "name": "Production",
   "vms": 48,
   "status_counts": { "OK": 40, "WARN": 6, "CRIT": 2, "UNKNOWN": 0 },
-  "update_state": { "up_to_date": 30, "up_to_date_content_pending": 10, "outdated": 6, "unverifiable": 2 },
+  "update_state_counts": { "up_to_date": 30, "up_to_date_content_pending": 10, "outdated": 6, "unverifiable": 2, "n/a": 0 },
   "security_installable_total": 21,
   "security_critical_total": null,
   "stale_data_vms": 2,
+  "in_build": 1,
   "max_cv_waiting_days": 19,
   "status": "CRIT"
 }
@@ -377,7 +417,7 @@ L'outil n'utilise que l'API REST de Foreman et de Katello, jamais hammer ni la b
 L'objectif est de gérer plusieurs centaines de VMs, et plus de 1 000, sans que la durée d'exécution ni la charge sur Katello dépendent du nombre de VMs, sauf pour la liste elle-même. Ces objectifs ne sont pas des promesses. Sur l'instance de validation (19 hôtes), une page de la liste coûte environ 47 ms par hôte, soit une extrapolation d'environ 45 s pour 1 000 hôtes, à confirmer sur un parc plus grand (V12) ; un comptage avec une page d'une ligne prend 150 à 250 ms.
 
 - **Pagination systématique** avec une taille de page `page_size` configurable (200 par défaut) ; la réponse indique total, subtotal, page et per\_page (V12). Un plafond de per\_page n'a pas pu être observé avec 19 hôtes (500 est accepté). Aucune réponse n'est supposée tenir en une page.
-- **Filtrage côté API** : les filtres (`--lce`, `--cv`, `--hostgroup`, `--search`) sont traduits en recherche Foreman envoyée au serveur, au lieu de télécharger tout le parc puis de filtrer. Les champs last\_checkin, errata\_status, trace\_status, build, lifecycle\_environment et content\_view sont acceptés (V2), pas subscription\_status. Un champ inconnu fait répondre 500 sur les hôtes (400 sur les tâches) : l'outil n'envoie que des champs connus et traite ce message comme une absence de support, sans nouvelle tentative.
+- **Filtrage côté API** : les filtres (`--lce`, `--cv`, `--hostgroup`, `--search`) sont traduits en recherche Foreman envoyée au serveur, au lieu de télécharger tout le parc puis de filtrer. Les champs last\_checkin, errata\_status, trace\_status, build, lifecycle\_environment, content\_view et hostgroup sont acceptés (V2), pas subscription\_status. Un champ inconnu fait répondre 500 sur les hôtes (400 sur les tâches) : l'outil n'envoie que des champs connus et traite ce message comme une absence de support, sans nouvelle tentative.
 - **Comptage sans transfert** : les compteurs de `summary` utilisent le total renvoyé par l'API avec une page d'une seule ligne, un appel par compteur, plutôt que de télécharger les VMs (V2, V12). Sans recherche utilisable, l'outil se rabat sur la liste complète paginée.
 - **Champs réduits** : l'API n'offre pas de sélection de champs : thin=true ne renvoie que l'identifiant et le nom, alors qu'un hôte pèse environ 214 champs dans la liste. L'outil ne garde en mémoire que les champs nécessaires, pas les réponses brutes (V1, V12).
 - **Aucun appel par VM hors de `host`** : jamais de boucle d'appels sur les VMs dans `summary`, `list` ou `content`. Les compteurs d'errata (installables et applicables), le statut des traces et la version de CV servie figurent dans la liste des hôtes (V1, V3, V6, V13) ; le nombre de VMs par version de CV s'en déduit. Si un champ n'est pas dans la liste (V1), l'indicateur correspondant est UNKNOWN et le README documente cette limite, plutôt que de multiplier les appels.
@@ -387,10 +427,12 @@ L'objectif est de gérer plusieurs centaines de VMs, et plus de 1 000, sans que 
 
 | Sous-commande | Appels API | Croissance avec le nombre de VMs |
 | --- | --- | --- |
-| `summary` | Une quinzaine (estimation d'après les appels testés) : version, ping, tâches, un comptage par compteur, CV et versions | Aucune avec le comptage filtré (V2) ; sinon linéaire |
+| `summary` | Version, ping, tâches, disque Pulp, organisation, environnements, content views, versions de CV, **plus la liste complète des hôtes** (une page par tranche de `page_size`) | Linéaire, comme `list` |
 | `list` | Une page par tranche de `page_size`, plus CV et versions | Linéaire : 1 000 VMs avec 200 par page donnent 5 pages |
 | `content` | Produits, repos, CV et versions paginés, plus la liste des hôtes pour compter les VMs par version | Seulement par la liste des hôtes |
 | `host` | Quelques appels pour une seule VM | Aucune |
+
+**Révision par rapport à l'estimation initiale** : `summary` ne peut pas se limiter à des comptages serveur (V2) pour ses compteurs parc (VMs par état de mise à jour, errata security installables, environnements en retard de CV, etc.), car ces états sont une classification propre à l'outil, pas un champ de recherche Foreman — il n'existe donc pas de comptage serveur qui leur corresponde directement. `summary` lit donc la liste complète des hôtes, exactement comme `list` (mais sans l'afficher ligne à ligne), et son coût croît avec le nombre de VMs. Seuls les compteurs vraiment plateforme (ping, tâches, disque Pulp) restent indépendants du parc. `--by-lce` reste gratuit : il réutilise cette même liste, sans appel supplémentaire.
 
 ### Dégradation en UNKNOWN et usage de N/A
 

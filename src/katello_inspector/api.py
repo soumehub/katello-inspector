@@ -45,6 +45,18 @@ def _is_retryable_network_error(exc: BaseException) -> bool:
     return isinstance(exc, _RETRYABLE_NETWORK_ERRORS)
 
 
+def _network_error_reason(exc: BaseException) -> str:
+    """Cause de l'echec reseau, sans l'habillage « <urlopen error ...> ».
+
+    urllib enveloppe la vraie cause (DNS, connexion refusee, certificat,
+    delai depasse) dans `URLError.reason` ; `str(URLError)` ne montre que
+    cet habillage, pas la cause elle-meme.
+    """
+    if isinstance(exc, urllib.error.URLError) and isinstance(exc.reason, BaseException):
+        return str(exc.reason)
+    return str(exc)
+
+
 class Response:
     """Reponse HTTP deja decodee en JSON."""
 
@@ -151,22 +163,23 @@ class BaseApiClient:
         self._page_size = page_size
         self._max_pages = max_pages
 
-    def _send(self, path: str, params: Mapping[str, Any]) -> tuple[int, bytes]:
+    def _send(self, path: str, params: Mapping[str, Any], *, anonymous: bool = False) -> tuple[int, bytes]:
         raise NotImplementedError
 
-    def get(self, path: str, params: Mapping[str, Any] | None = None) -> Response:
+    def get(self, path: str, params: Mapping[str, Any] | None = None, *, anonymous: bool = False) -> Response:
         query = dict(params or {})
         last_exc: BaseException | None = None
         for attempt in (1, 2):
             try:
-                status, body = self._send(path, query)
+                status, body = self._send(path, query, anonymous=anonymous)
             except OSError as exc:
+                reason = _network_error_reason(exc)
                 if not _is_retryable_network_error(exc):
-                    raise ApiError(f"erreur reseau sur {path} : {exc}") from exc
+                    raise ApiError(f"erreur reseau sur {path} : {reason}") from exc
                 last_exc = exc
                 if attempt == 1:
                     continue
-                raise ApiError(f"erreur reseau sur {path} : {exc}") from exc
+                raise ApiError(f"erreur reseau sur {path} : {reason}") from exc
             else:
                 text = body.decode("utf-8", "replace") if body else ""
                 if status < 400:
@@ -253,12 +266,13 @@ class ApiClient(BaseApiClient):
         ctx = _build_ssl_context(ca_file=ca_file, insecure=insecure)
         self._opener = urllib.request.build_opener(_NoRedirectHandler(), urllib.request.HTTPSHandler(context=ctx))
 
-    def _send(self, path: str, params: Mapping[str, Any]) -> tuple[int, bytes]:
+    def _send(self, path: str, params: Mapping[str, Any], *, anonymous: bool = False) -> tuple[int, bytes]:
         qs = urllib.parse.urlencode(params, doseq=True) if params else ""
         url = self._base_url + path + (("?" + qs) if qs else "")
         req = urllib.request.Request(url, method="GET")
         req.add_header("Accept", "application/json")
-        req.add_header("Authorization", self._auth_header)
+        if not anonymous:
+            req.add_header("Authorization", self._auth_header)
         req.add_header("User-Agent", self._user_agent)
         try:
             with self._opener.open(req, timeout=self._timeout) as resp:
@@ -270,7 +284,13 @@ class ApiClient(BaseApiClient):
 
 
 def _fixture_key(path: str, params: Mapping[str, Any]) -> tuple[str, tuple[tuple[str, str], ...]]:
-    normalized = tuple(sorted((str(k), str(v)) for k, v in params.items()))
+    # page=1 et page absent sont equivalents (Foreman applique ce defaut) :
+    # certaines captures reelles omettent "page" sur un premier appel, et le
+    # code appelant le precise toujours. Sans cette equivalence, les deux
+    # conventions ne se retrouveraient jamais pour le meme appel reel.
+    normalized = tuple(
+        sorted((str(k), str(v)) for k, v in params.items() if not (k == "page" and str(v) == "1"))
+    )
     return path, normalized
 
 
@@ -301,7 +321,7 @@ class FixtureClient(BaseApiClient):
             body = json.dumps(response).encode("utf-8") if response is not None else b""
             self._fixtures[_fixture_key(path, params)] = (status, body)
 
-    def _send(self, path: str, params: Mapping[str, Any]) -> tuple[int, bytes]:
+    def _send(self, path: str, params: Mapping[str, Any], *, anonymous: bool = False) -> tuple[int, bytes]:
         try:
             return self._fixtures[_fixture_key(path, params)]
         except KeyError:

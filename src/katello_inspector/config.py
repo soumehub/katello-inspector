@@ -207,6 +207,21 @@ def _resolve_token(
     return None, None
 
 
+def _validate_warn_crit(warn: int, crit: int, *, label: str) -> None:
+    if warn > crit:
+        raise ConfigError(f"{label} : le seuil WARN ({warn}) ne peut pas depasser le seuil CRIT ({crit})")
+
+
+def _validate_override_sections(overrides: dict[str, dict[str, Any]], *, prefix: str) -> None:
+    for name, values in overrides.items():
+        if "cv_lag_warn_days" in values and "cv_lag_crit_days" in values:
+            _validate_warn_crit(
+                values["cv_lag_warn_days"],
+                values["cv_lag_crit_days"],
+                label=f"[{prefix}:{name}] cv_lag_warn_days/cv_lag_crit_days",
+            )
+
+
 def build_config(args: Any) -> Config:
     monitoring = bool(getattr(args, "monitoring", False))
     config_path = find_config_file(getattr(args, "config", None))
@@ -281,8 +296,15 @@ def build_config(args: Any) -> Config:
         ),
     )
 
+    _validate_warn_crit(thresholds.security_warn, thresholds.security_crit, label="security_warn/security_crit")
+    _validate_warn_crit(
+        thresholds.cv_lag_warn_days, thresholds.cv_lag_crit_days, label="cv_lag_warn_days/cv_lag_crit_days"
+    )
+
     lce_overrides = _parse_overrides(parser, "lce:")
     cv_overrides = _parse_overrides(parser, "cv:")
+    _validate_override_sections(lce_overrides, prefix="lce")
+    _validate_override_sections(cv_overrides, prefix="cv")
 
     color = _resolve_str(None, "COLOR", parser.get("output", "color", fallback=None), "auto") or "auto"
     if getattr(args, "no_color", False) or os.environ.get("NO_COLOR"):

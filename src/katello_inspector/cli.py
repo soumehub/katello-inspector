@@ -10,19 +10,17 @@ En mode --monitoring, les deux doivent donner 3 (UNKNOWN), jamais 1 ni 2.
 from __future__ import annotations
 
 import argparse
-import datetime as dt
 import json
 import sys
 from typing import Any, Callable, NoReturn
 
 from . import __version__
 from .api import ApiClient, BaseApiClient, FixtureClient
+from .commands import list as list_command
+from .commands import summary as summary_command
 from .config import Config, build_config
 from .exceptions import ApiError, ConfigError, InspectorError, UsageError
-
-SCHEMA_VERSION = "1"
-
-_NAGIOS_CODES = {"OK": 0, "WARN": 1, "CRIT": 2, "UNKNOWN": 3}
+from .render_json import build_envelope, failure_envelope, status_to_nagios
 
 
 class _StrictArgumentParser(argparse.ArgumentParser):
@@ -74,7 +72,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     summary_parser = subparsers.add_parser("summary", parents=[global_parent])
     summary_parser.add_argument("--by-lce", action="store_true")
-    summary_parser.set_defaults(func=_not_implemented("summary"))
+    summary_parser.set_defaults(func=_cmd_summary)
 
     list_parser = subparsers.add_parser("list", parents=[global_parent])
     list_parser.add_argument("--lce")
@@ -84,7 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
     list_parser.add_argument("--search")
     list_parser.add_argument("--sort", choices=("nom", "check-in", "errata"))
     list_parser.add_argument("--limit", type=int)
-    list_parser.set_defaults(func=_not_implemented("list"))
+    list_parser.set_defaults(func=_cmd_list)
 
     content_parser = subparsers.add_parser("content", parents=[global_parent])
     content_parser.add_argument("--stale-only", action="store_true")
@@ -117,38 +115,20 @@ def build_client(config: Config) -> BaseApiClient:
     )
 
 
-def _now_iso() -> str:
-    return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+def _cmd_summary(args: argparse.Namespace) -> int:
+    config = build_config(args)
+    if config.token_warning:
+        print(f"katello-inspector : {config.token_warning}", file=sys.stderr)
+    client = build_client(config)
+    return summary_command.run(args, config, client)
 
 
-def _status_to_nagios(status: str) -> int:
-    return _NAGIOS_CODES.get(status, 3)
-
-
-def _build_envelope(
-    *,
-    command: str,
-    config: Config,
-    status: str,
-    data: Any,
-    unknown: list[dict[str, str]],
-    server_extra: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    server: dict[str, Any] = {"url": config.url, "organization": config.organization}
-    if config.insecure:
-        server["tls_verified"] = False
-    if server_extra:
-        server.update(server_extra)
-    return {
-        "schema_version": SCHEMA_VERSION,
-        "tool": {"name": "katello-inspector", "version": __version__},
-        "generated_at": _now_iso(),
-        "command": command,
-        "server": server,
-        "status": status,
-        "data": data,
-        "unknown": unknown,
-    }
+def _cmd_list(args: argparse.Namespace) -> int:
+    config = build_config(args)
+    if config.token_warning:
+        print(f"katello-inspector : {config.token_warning}", file=sys.stderr)
+    client = build_client(config)
+    return list_command.run(args, config, client)
 
 
 def _cmd_version(args: argparse.Namespace) -> int:
@@ -179,7 +159,7 @@ def _cmd_version(args: argparse.Namespace) -> int:
 
     status = "UNKNOWN" if unknown else "OK"
 
-    envelope = _build_envelope(
+    envelope = build_envelope(
         command="version",
         config=config,
         status=status,
@@ -201,7 +181,7 @@ def _cmd_version(args: argparse.Namespace) -> int:
             print("TLS non verifie (--insecure)")
 
     if monitoring:
-        return _status_to_nagios(status)
+        return status_to_nagios(status)
     return 0
 
 
@@ -209,23 +189,6 @@ def _server_block_from_args(args: argparse.Namespace | None) -> dict[str, Any]:
     if args is None:
         return {"url": None, "organization": None}
     return {"url": getattr(args, "url", None), "organization": getattr(args, "org", None)}
-
-
-def _failure_envelope(message: str, *, command: str | None, server: dict[str, Any]) -> dict[str, Any]:
-    # Memes cles que l'enveloppe normale (cf. _build_envelope) : un
-    # consommateur JSONPath en mode monitoring ne doit jamais rencontrer une
-    # forme differente parce que la commande a echoue.
-    return {
-        "schema_version": SCHEMA_VERSION,
-        "tool": {"name": "katello-inspector", "version": __version__},
-        "generated_at": _now_iso(),
-        "command": command,
-        "server": server,
-        "status": "UNKNOWN",
-        "data": {},
-        "unknown": [{"indicator": "tool", "reason": message}],
-        "error": message,
-    }
 
 
 def _report_failure(
@@ -239,12 +202,12 @@ def _report_failure(
 ) -> int:
     if monitoring:
         print(f"katello-inspector : {message}", file=sys.stderr)
-        envelope = _failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
+        envelope = failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
         print(json.dumps(envelope, ensure_ascii=False))
         return 3
     if output_format == "json":
         # JSON sur stdout seulement : pas de ligne de log en double sur stderr.
-        envelope = _failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
+        envelope = failure_envelope(message, command=command, server=server or {"url": None, "organization": None})
         print(json.dumps(envelope, ensure_ascii=False))
         return manual_code
     print(f"katello-inspector : {message}", file=sys.stderr)
