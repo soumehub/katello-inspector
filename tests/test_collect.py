@@ -19,6 +19,7 @@ from katello_inspector.collect import (
     collect_ping,
     collect_pulp_disk,
     collect_recent_task_failures,
+    format_iso_z,
     host_from_api,
     order_environments_by_promotion,
     parse_api_datetime,
@@ -63,6 +64,21 @@ def test_parse_api_datetime_empty_string() -> None:
 
 def test_parse_api_datetime_unexpected_format() -> None:
     assert parse_api_datetime("pas une date") is None
+
+
+def test_format_iso_z_round_trips_with_parse() -> None:
+    value = parse_api_datetime("2026-08-14 11:56:26 UTC")
+    assert format_iso_z(value) == "2026-08-14T11:56:26Z"
+
+
+def test_format_iso_z_never_produces_plus_zero_offset() -> None:
+    value = parse_api_datetime("2026-08-14 11:56:26 UTC")
+    assert value is not None
+    assert "+00:00" not in format_iso_z(value)
+
+
+def test_format_iso_z_none_stays_none() -> None:
+    assert format_iso_z(None) is None
 
 
 # --------------------------------------------------------------------------
@@ -343,7 +359,7 @@ def test_collect_recent_task_failures_reads_label_state_result(tmp_path: Path) -
                     "label": "Actions::Katello::Repository::Sync",
                     "state": "stopped",
                     "result": "error",
-                    "started_at": "2026-11-16T01:00:19Z",
+                    "started_at": "2026-11-16 01:00:19 UTC",
                 }
             ],
         },
@@ -351,6 +367,8 @@ def test_collect_recent_task_failures_reads_label_state_result(tmp_path: Path) -
     result = collect_recent_task_failures(FixtureClient(tmp_path))
     assert result.total == 1
     assert result.omitted == 0
+    assert result.tasks[0].started_at is not None
+    assert result.tasks[0].started_at.year == 2026
     assert result.tasks[0].label == "Actions::Katello::Repository::Sync"
 
 
@@ -370,8 +388,8 @@ def test_collect_recent_task_failures_reports_omitted_beyond_page_size(tmp_path:
         response={
             "subtotal": 5,
             "results": [
-                {"label": "A", "state": "stopped", "result": "error", "started_at": "2026-11-16T01:00:00Z"},
-                {"label": "B", "state": "stopped", "result": "error", "started_at": "2026-11-16T01:00:01Z"},
+                {"label": "A", "state": "stopped", "result": "error", "started_at": "2026-11-16 01:00:00 UTC"},
+                {"label": "B", "state": "stopped", "result": "error", "started_at": "2026-11-16 01:00:01 UTC"},
             ],
         },
     )

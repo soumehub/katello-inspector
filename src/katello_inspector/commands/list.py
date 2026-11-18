@@ -15,6 +15,7 @@ from ..collect import (
     collect_foreman_version,
     collect_hosts,
     collect_katello_version,
+    format_iso_z,
     resolve_organization,
 )
 from ..config import Config
@@ -71,7 +72,7 @@ def _host_dict(
         "lifecycle_environment": lifecycle_environment,
         "content_views": content_views,
         "freshness": {
-            "last_checkin": host.last_checkin.isoformat() if host.last_checkin else None,
+            "last_checkin": format_iso_z(host.last_checkin),
             "checkin_age_days": (now - host.last_checkin).days if host.last_checkin else None,
             "package_profile_age_days": None,
         },

@@ -34,6 +34,7 @@ from ..collect import (
     collect_ping,
     collect_pulp_disk,
     collect_recent_task_failures,
+    format_iso_z,
     order_environments_by_promotion,
     resolve_organization,
 )
@@ -109,7 +110,7 @@ def build_data(
             "status": compute_tasks_status(tasks),
             "failing_or_paused_24h": tasks.total,
             "tasks": [
-                {"label": t.label, "state": t.state, "result": t.result, "started_at": t.started_at}
+                {"label": t.label, "state": t.state, "result": t.result, "started_at": format_iso_z(t.started_at)}
                 for t in tasks.tasks
             ],
             "tasks_omitted": tasks.omitted,

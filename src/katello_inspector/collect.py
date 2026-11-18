@@ -54,6 +54,18 @@ def _escape_search_value(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"')
 
 
+def format_iso_z(value: dt.datetime | None) -> str | None:
+    """Inverse de `parse_api_datetime` : horodatage ISO 8601 en UTC, suffixe Z.
+
+    Jamais le `+00:00` que produirait `datetime.isoformat()` sur une valeur
+    deja aware UTC : toutes les dates de la sortie de l'outil doivent avoir
+    la meme forme.
+    """
+    if value is None:
+        return None
+    return value.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def build_search(
     *,
     lce: str | None = None,
@@ -326,7 +338,7 @@ class TaskSummary:
     label: str
     state: str | None
     result: str | None
-    started_at: str | None
+    started_at: dt.datetime | None
 
 
 @dataclass
@@ -355,7 +367,7 @@ def collect_recent_task_failures(
             label=item.get("label", ""),
             state=item.get("state"),
             result=item.get("result"),
-            started_at=item.get("started_at"),
+            started_at=parse_api_datetime(item.get("started_at")),
         )
         for item in results
     ]
