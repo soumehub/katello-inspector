@@ -169,3 +169,39 @@ def test_page_size_rejects_non_numeric_value(monkeypatch: pytest.MonkeyPatch) ->
     monkeypatch.setenv("KATELLO_INSPECTOR_PAGE_SIZE", "beaucoup")
     with pytest.raises(ConfigError):
         build_config(SimpleNamespace())
+
+
+def test_security_warn_above_crit_is_refused() -> None:
+    with pytest.raises(ConfigError):
+        build_config(SimpleNamespace(security_warn=10, security_crit=1))
+
+
+def test_security_warn_equal_to_crit_is_accepted() -> None:
+    config = build_config(SimpleNamespace(security_warn=5, security_crit=5))
+    assert config.thresholds.security_warn == 5
+
+
+def test_cv_lag_warn_above_crit_is_refused(tmp_path: Path) -> None:
+    ini = _ini(tmp_path, "[thresholds]\ncv_lag_warn_days = 90\ncv_lag_crit_days = 45\n")
+    with pytest.raises(ConfigError):
+        build_config(SimpleNamespace(config=str(ini)))
+
+
+def test_cv_lag_warn_above_crit_in_lce_override_is_refused(tmp_path: Path) -> None:
+    ini = _ini(tmp_path, "[lce:Production]\ncv_lag_warn_days = 90\ncv_lag_crit_days = 45\n")
+    with pytest.raises(ConfigError):
+        build_config(SimpleNamespace(config=str(ini)))
+
+
+def test_cv_lag_warn_above_crit_in_cv_override_is_refused(tmp_path: Path) -> None:
+    ini = _ini(tmp_path, "[cv:cv-app-tomcat]\ncv_lag_warn_days = 90\ncv_lag_crit_days = 45\n")
+    with pytest.raises(ConfigError):
+        build_config(SimpleNamespace(config=str(ini)))
+
+
+def test_cv_lag_override_with_only_one_of_the_two_thresholds_is_not_checked(tmp_path: Path) -> None:
+    # Pas assez d'information pour comparer : pas d'erreur, le seuil global
+    # complete l'autre cote via threshold_for.
+    ini = _ini(tmp_path, "[lce:Production]\ncv_lag_warn_days = 90\n")
+    config = build_config(SimpleNamespace(config=str(ini)))
+    assert config.lce_overrides["Production"]["cv_lag_warn_days"] == 90
