@@ -16,6 +16,8 @@ from typing import Any, Callable, NoReturn
 
 from . import __version__
 from .api import ApiClient, BaseApiClient, FixtureClient
+from .commands import list as list_command
+from .commands import summary as summary_command
 from .config import Config, build_config
 from .exceptions import ApiError, ConfigError, InspectorError, UsageError
 from .render_json import build_envelope, failure_envelope, status_to_nagios
@@ -70,7 +72,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     summary_parser = subparsers.add_parser("summary", parents=[global_parent])
     summary_parser.add_argument("--by-lce", action="store_true")
-    summary_parser.set_defaults(func=_not_implemented("summary"))
+    summary_parser.set_defaults(func=_cmd_summary)
 
     list_parser = subparsers.add_parser("list", parents=[global_parent])
     list_parser.add_argument("--lce")
@@ -80,7 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
     list_parser.add_argument("--search")
     list_parser.add_argument("--sort", choices=("nom", "check-in", "errata"))
     list_parser.add_argument("--limit", type=int)
-    list_parser.set_defaults(func=_not_implemented("list"))
+    list_parser.set_defaults(func=_cmd_list)
 
     content_parser = subparsers.add_parser("content", parents=[global_parent])
     content_parser.add_argument("--stale-only", action="store_true")
@@ -111,6 +113,22 @@ def build_client(config: Config) -> BaseApiClient:
         insecure=config.insecure,
         page_size=config.page_size,
     )
+
+
+def _cmd_summary(args: argparse.Namespace) -> int:
+    config = build_config(args)
+    if config.token_warning:
+        print(f"katello-inspector : {config.token_warning}", file=sys.stderr)
+    client = build_client(config)
+    return summary_command.run(args, config, client)
+
+
+def _cmd_list(args: argparse.Namespace) -> int:
+    config = build_config(args)
+    if config.token_warning:
+        print(f"katello-inspector : {config.token_warning}", file=sys.stderr)
+    client = build_client(config)
+    return list_command.run(args, config, client)
 
 
 def _cmd_version(args: argparse.Namespace) -> int:

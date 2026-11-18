@@ -40,20 +40,20 @@ def test_unknown_option_detected_as_monitoring_before_argparse(capsys: pytest.Ca
 
 
 def test_not_implemented_command_manual(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["summary"])
+    code = main(["content"])
     assert code == 1
     assert "pas encore implementee" in capsys.readouterr().err
 
 
 def test_not_implemented_command_monitoring(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["--monitoring", "list"])
+    code = main(["--monitoring", "content"])
     assert code == 3
     payload = json.loads(capsys.readouterr().out.strip())
     assert payload["status"] == "UNKNOWN"
 
 
 def test_error_envelope_has_same_keys_as_normal_envelope(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["--monitoring", "list"])
+    code = main(["--monitoring", "content"])
     assert code == 3
     payload = json.loads(capsys.readouterr().out.strip())
     assert set(payload.keys()) == {
@@ -67,7 +67,7 @@ def test_error_envelope_has_same_keys_as_normal_envelope(capsys: pytest.CaptureF
         "unknown",
         "error",
     }
-    assert payload["command"] == "list"
+    assert payload["command"] == "content"
     assert payload["data"] == {}
     assert payload["error"]
 
@@ -117,18 +117,18 @@ def test_version_format_json_manual_mode_still_returns_zero(capsys: pytest.Captu
 
 
 def test_format_json_respected_on_error_in_manual_mode(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["list", "--format", "json"])
+    code = main(["content", "--format", "json"])
     assert code == 1
     captured = capsys.readouterr()
     assert captured.err == ""
     payload = json.loads(captured.out.strip())
     assert payload["status"] == "UNKNOWN"
-    assert payload["command"] == "list"
+    assert payload["command"] == "content"
     assert payload["error"]
 
 
 def test_format_equals_json_respected_on_error(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["list", "--format=json"])
+    code = main(["content", "--format=json"])
     assert code == 1
     captured = capsys.readouterr()
     assert captured.err == ""
@@ -139,7 +139,7 @@ def test_format_equals_json_respected_on_error(capsys: pytest.CaptureFixture[str
 def test_usage_error_from_argparse_stays_text_even_with_format_json(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    code = main(["list", "--format", "json", "--bogus-option"])
+    code = main(["content", "--format", "json", "--bogus-option"])
     assert code == 2
     captured = capsys.readouterr()
     assert captured.out == ""
