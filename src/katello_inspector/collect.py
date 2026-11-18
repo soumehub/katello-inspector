@@ -383,3 +383,15 @@ def collect_pulp_disk(client: BaseApiClient) -> PulpDisk:
     if total is None or used is None or free is None:
         raise ApiError("informations de stockage Pulp incompletes")
     return PulpDisk(total_bytes=total, used_bytes=used, free_bytes=free)
+
+
+def collect_foreman_version(client: BaseApiClient) -> str | None:
+    body = client.get("/api/status").data or {}
+    version = body.get("version")
+    return version if isinstance(version, str) else None
+
+
+def collect_katello_version(client: BaseApiClient) -> str | None:
+    body = client.get("/katello/api/status").data or {}
+    version = body.get("version")
+    return version if isinstance(version, str) else None

@@ -13,7 +13,9 @@ from katello_inspector.collect import (
     collect_content_view_versions,
     collect_content_views,
     collect_environments,
+    collect_foreman_version,
     collect_hosts,
+    collect_katello_version,
     collect_ping,
     collect_pulp_disk,
     collect_recent_task_failures,
@@ -61,6 +63,35 @@ def test_parse_api_datetime_empty_string() -> None:
 
 def test_parse_api_datetime_unexpected_format() -> None:
     assert parse_api_datetime("pas une date") is None
+
+
+# --------------------------------------------------------------------------
+# collect_foreman_version / collect_katello_version
+# --------------------------------------------------------------------------
+
+
+def test_collect_foreman_version_reads_version_field(tmp_path: Path) -> None:
+    _write_fixture(
+        tmp_path, "status.json", path="/api/status", params={}, status=200, response={"version": "3.19.1"}
+    )
+    assert collect_foreman_version(FixtureClient(tmp_path)) == "3.19.1"
+
+
+def test_collect_katello_version_reads_version_field(tmp_path: Path) -> None:
+    _write_fixture(
+        tmp_path,
+        "status.json",
+        path="/katello/api/status",
+        params={},
+        status=200,
+        response={"version": "4.21.1.1"},
+    )
+    assert collect_katello_version(FixtureClient(tmp_path)) == "4.21.1.1"
+
+
+def test_collect_foreman_version_missing_field_is_none(tmp_path: Path) -> None:
+    _write_fixture(tmp_path, "status.json", path="/api/status", params={}, status=200, response={})
+    assert collect_foreman_version(FixtureClient(tmp_path)) is None
 
 
 # --------------------------------------------------------------------------

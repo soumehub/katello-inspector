@@ -28,7 +28,9 @@ from ..api import BaseApiClient
 from ..collect import (
     collect_content_view_versions,
     collect_environments,
+    collect_foreman_version,
     collect_hosts,
+    collect_katello_version,
     collect_ping,
     collect_pulp_disk,
     collect_recent_task_failures,
@@ -158,8 +160,26 @@ def build_data(
     return data, overall_status, unknown
 
 
+def _collect_server_versions(client: BaseApiClient) -> tuple[dict[str, Any], list[dict[str, str]]]:
+    server_extra: dict[str, Any] = {}
+    unknown: list[dict[str, str]] = []
+    try:
+        server_extra["foreman_version"] = collect_foreman_version(client)
+    except ApiError as exc:
+        server_extra["foreman_version"] = None
+        unknown.append({"indicator": "foreman_version", "reason": str(exc)})
+    try:
+        server_extra["katello_version"] = collect_katello_version(client)
+    except ApiError as exc:
+        server_extra["katello_version"] = None
+        unknown.append({"indicator": "katello_version", "reason": str(exc)})
+    return server_extra, unknown
+
+
 def run(args: argparse.Namespace, config: Config, client: BaseApiClient) -> int:
     data, status, unknown = build_data(args, config, client)
+    server_extra, version_unknown = _collect_server_versions(client)
+    unknown = unknown + version_unknown
     thresholds = {name: getattr(config.thresholds, name) for name in _THRESHOLD_FIELDS}
 
     monitoring = bool(getattr(args, "monitoring", False))
@@ -167,7 +187,13 @@ def run(args: argparse.Namespace, config: Config, client: BaseApiClient) -> int:
 
     if monitoring or output_format == "json":
         envelope = build_envelope(
-            command="summary", config=config, status=status, data=data, unknown=unknown, thresholds=thresholds
+            command="summary",
+            config=config,
+            status=status,
+            data=data,
+            unknown=unknown,
+            thresholds=thresholds,
+            server_extra=server_extra,
         )
         print(json.dumps(envelope, ensure_ascii=False))
     else:
