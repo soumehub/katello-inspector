@@ -323,6 +323,42 @@ Si l'outil lui-même échoue (erreur de configuration, d'API ou inattendue, en m
 
 Un champ dont la source API n'est pas confirmée (points V) vaut `null` et son indicateur passe en UNKNOWN ; il n'est jamais remplacé par une valeur par défaut. Le champ `content_source` est rempli dès la v1 pour que la prise en charge des capsules n'oblige pas à changer le schéma. La date du profil de paquets est null, car l'API n'expose aucune date (V4).
 
+### Contenu de `data` pour `summary`
+
+```json
+{
+  "platform": {
+    "ping": { "status": "OK", "services": { "candlepin": "ok", "pulp3": "ok", "pulp3_content": "ok" } },
+    "tasks": {
+      "status": "CRIT",
+      "failing_or_paused_24h": 3,
+      "tasks": [
+        { "label": "Actions::Katello::Repository::Sync", "state": "stopped", "result": "error", "started_at": "2026-11-16T01:00:19Z" }
+      ],
+      "tasks_omitted": 0
+    },
+    "pulp_disk": { "status": "OK", "free_pct": 64.02, "total_bytes": 321965260800, "used_bytes": 115839705088, "free_bytes": 206125555712 }
+  },
+  "fleet": {
+    "total": 19,
+    "evaluated": 18,
+    "na": 1,
+    "status_counts": { "OK": 10, "WARN": 5, "CRIT": 2, "UNKNOWN": 1 },
+    "update_state_counts": { "up_to_date": 8, "up_to_date_content_pending": 4, "outdated": 5, "unverifiable": 1, "n/a": 1 },
+    "stale_data": 1,
+    "security_installable_total": 14,
+    "reboot_required": 2,
+    "in_build": 1,
+    "cv_lag_environments": 1
+  },
+  "by_lce": null
+}
+```
+
+`platform.tasks.status` : CRIT si au moins une des tâches en erreur ou en pause des dernières 24h porte un libellé `Actions::Katello::Repository::Sync`, `Actions::Katello::ContentView::Publish`, `Actions::Katello::ContentView::Promote` ou `Actions::Katello::SyncPlan::Run` ; sinon WARN si `failing_or_paused_24h > 0` ; sinon OK. `failing_or_paused_24h` est le total renvoyé par l'API (`subtotal`), pas le nombre d'éléments listés : `tasks` est plafonné à 50 lignes, `tasks_omitted` donne le nombre de lignes au-delà de ce plafond. `platform.pulp_disk` est lu sans authentification (voir plus haut).
+
+`fleet.security_installable_total` et `fleet.reboot_required` excluent les VMs N/A et en build (ces indicateurs y sont eux-mêmes N/A). `fleet.cv_lag_environments` est le nombre de Lifecycle Environments distincts ayant au moins un couple (CV, environnement) en WARN ou CRIT. `by_lce` vaut `null` sans `--by-lce` ; avec l'option, c'est la liste décrite ci-dessous.
+
 ### Contenu de `data.by_lce` pour `summary --by-lce`
 
 ```json
@@ -330,10 +366,11 @@ Un champ dont la source API n'est pas confirmée (points V) vaut `null` et son i
   "name": "Production",
   "vms": 48,
   "status_counts": { "OK": 40, "WARN": 6, "CRIT": 2, "UNKNOWN": 0 },
-  "update_state": { "up_to_date": 30, "up_to_date_content_pending": 10, "outdated": 6, "unverifiable": 2 },
+  "update_state_counts": { "up_to_date": 30, "up_to_date_content_pending": 10, "outdated": 6, "unverifiable": 2, "n/a": 0 },
   "security_installable_total": 21,
   "security_critical_total": null,
   "stale_data_vms": 2,
+  "in_build": 1,
   "max_cv_waiting_days": 19,
   "status": "CRIT"
 }
@@ -390,10 +427,12 @@ L'objectif est de gérer plusieurs centaines de VMs, et plus de 1 000, sans que 
 
 | Sous-commande | Appels API | Croissance avec le nombre de VMs |
 | --- | --- | --- |
-| `summary` | Une quinzaine (estimation d'après les appels testés) : version, ping, tâches, un comptage par compteur, CV et versions | Aucune avec le comptage filtré (V2) ; sinon linéaire |
+| `summary` | Version, ping, tâches, disque Pulp, organisation, environnements, content views, versions de CV, **plus la liste complète des hôtes** (une page par tranche de `page_size`) | Linéaire, comme `list` |
 | `list` | Une page par tranche de `page_size`, plus CV et versions | Linéaire : 1 000 VMs avec 200 par page donnent 5 pages |
 | `content` | Produits, repos, CV et versions paginés, plus la liste des hôtes pour compter les VMs par version | Seulement par la liste des hôtes |
 | `host` | Quelques appels pour une seule VM | Aucune |
+
+**Révision par rapport à l'estimation initiale** : `summary` ne peut pas se limiter à des comptages serveur (V2) pour ses compteurs parc (VMs par état de mise à jour, errata security installables, environnements en retard de CV, etc.), car ces états sont une classification propre à l'outil, pas un champ de recherche Foreman — il n'existe donc pas de comptage serveur qui leur corresponde directement. `summary` lit donc la liste complète des hôtes, exactement comme `list` (mais sans l'afficher ligne à ligne), et son coût croît avec le nombre de VMs. Seuls les compteurs vraiment plateforme (ping, tâches, disque Pulp) restent indépendants du parc. `--by-lce` reste gratuit : il réutilise cette même liste, sans appel supplémentaire.
 
 ### Dégradation en UNKNOWN et usage de N/A
 
