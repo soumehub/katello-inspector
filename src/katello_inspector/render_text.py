@@ -17,12 +17,32 @@ _UPDATE_STATE_LABELS = {
 }
 
 
-def _pad(value: str, width: int) -> str:
-    return value if len(value) >= width else value + " " * (width - len(value))
+_COLUMN_GAP = 2
 
 
-def _row(values: list[str], widths: list[int]) -> str:
-    return "".join(_pad(v, w) for v, w in zip(values, widths))
+def _column_widths(header: list[str], rows: list[list[str]]) -> list[int]:
+    widths = [len(h) for h in header]
+    for row in rows:
+        for i, cell in enumerate(row):
+            widths[i] = max(widths[i], len(cell))
+    return widths
+
+
+def _format_row(values: list[str], widths: list[int]) -> str:
+    # Pas de remplissage sur la derniere colonne : un alignement qu'aucune
+    # colonne suivante n'a besoin de preserver, et qui eviterait sinon des
+    # espaces de fin inutiles sur chaque ligne.
+    parts = [
+        v + " " * (widths[i] - len(v) + _COLUMN_GAP) if i < len(values) - 1 else v for i, v in enumerate(values)
+    ]
+    return "".join(parts)
+
+
+def _render_table(header: list[str], rows: list[list[str]], *, indent: str = "") -> list[str]:
+    widths = _column_widths(header, rows)
+    lines = [indent + _format_row(header, widths)]
+    lines.extend(indent + _format_row(row, widths) for row in rows)
+    return lines
 
 
 def render_summary_text(data: dict[str, Any]) -> str:
@@ -74,10 +94,8 @@ def render_summary_text(data: dict[str, Any]) -> str:
         lines.append("")
         lines.append("Conformite par Lifecycle Environment")
         header = ["LCE", "VMs", "OK", "WARN", "CRIT", "?", "Sec.inst.", "Obsoletes", "Attente CV", "Statut"]
-        widths = [14, 5, 4, 5, 5, 3, 10, 10, 11, 7]
-        lines.append("  " + _row(header, widths))
-        for entry in by_lce:
-            row = [
+        rows = [
+            [
                 entry["name"],
                 str(entry["vms"]),
                 str(entry["status_counts"]["OK"]),
@@ -89,7 +107,9 @@ def render_summary_text(data: dict[str, Any]) -> str:
                 f"{entry['max_cv_waiting_days']}j",
                 entry["status"],
             ]
-            lines.append("  " + _row(row, widths))
+            for entry in by_lce
+        ]
+        lines.extend(_render_table(header, rows, indent="  "))
 
     return "\n".join(lines)
 
@@ -112,10 +132,8 @@ def _primary_content_view(content_views: list[dict[str, Any]]) -> dict[str, Any]
 
 def render_list_text(hosts: list[dict[str, Any]], *, limit: int | None = None) -> str:
     header = ["Nom", "LCE", "CV (version)", "Check-in", "Sec.inst.", "Reboot", "A jour", "Statut"]
-    widths = [22, 12, 32, 10, 10, 7, 7, 8]
-    lines = [_row(header, widths)]
-
     shown = hosts if limit is None else hosts[:limit]
+    rows = []
     for entry in shown:
         content_views = entry.get("content_views") or []
         primary = _primary_content_view(content_views)
@@ -141,8 +159,9 @@ def render_list_text(hosts: list[dict[str, Any]], *, limit: int | None = None) -
             up_to_date_text,
             entry["status"],
         ]
-        lines.append(_row(row, widths))
+        rows.append(row)
 
+    lines = _render_table(header, rows)
     omitted = len(hosts) - len(shown)
     if omitted > 0:
         lines.append(f"... {omitted} ligne(s) omise(s) (--limit, --format json ou --monitoring pour tout voir)")
