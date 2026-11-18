@@ -1,0 +1,40 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/katello/api/ping",
+  "params": {}
+ },
+ "status": 200,
+ "kind": "ok",
+ "elapsed_ms": 232,
+ "response": {
+  "status": "ok",
+  "services": {
+   "candlepin": {
+    "status": "ok",
+    "duration_ms": "15"
+   },
+   "candlepin_auth": {
+    "status": "ok",
+    "duration_ms": "16"
+   },
+   "foreman_tasks": {
+    "status": "ok",
+    "duration_ms": "3"
+   },
+   "katello_events": {
+    "status": "ok",
+    "message": "0 Processed, 0 Failed",
+    "duration_ms": "0"
+   },
+   "pulp3": {
+    "status": "ok",
+    "duration_ms": "68"
+   },
+   "pulp3_content": {
+    "status": "ok",
+    "duration_ms": "31"
+   }
+  }
+ }
+}

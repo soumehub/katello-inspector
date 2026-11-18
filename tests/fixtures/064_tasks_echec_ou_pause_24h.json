@@ -1,0 +1,47 @@
+{
+ "request": {
+  "method": "GET",
+  "path": "/foreman_tasks/api/tasks",
+  "params": {
+   "search": "(state = paused or result = error) and started_at > \"24 hours ago\"",
+   "per_page": 50,
+   "page": 1,
+   "order": "started_at DESC"
+  }
+ },
+ "status": 200,
+ "kind": "ok",
+ "elapsed_ms": 140,
+ "response": {
+  "total": 1317,
+  "subtotal": 3,
+  "page": 1,
+  "per_page": 50,
+  "results": [
+   {
+    "id": "00000000-0000-0000-0000-000000000003",
+    "label": "Actions::RemoteExecution::RunHostJob",
+    "state": "stopped",
+    "result": "error",
+    "started_at": "2026-11-18 03:00:00 UTC",
+    "ended_at": "2026-11-18 03:00:21 UTC"
+   },
+   {
+    "id": "00000000-0000-0000-0000-000000000002",
+    "label": "Actions::Katello::ContentView::Publish",
+    "state": "paused",
+    "result": null,
+    "started_at": "2026-11-18 02:00:00 UTC",
+    "ended_at": null
+   },
+   {
+    "id": "00000000-0000-0000-0000-000000000001",
+    "label": "Actions::Katello::Repository::Sync",
+    "state": "stopped",
+    "result": "error",
+    "started_at": "2026-11-18 01:00:00 UTC",
+    "ended_at": "2026-11-18 01:00:12 UTC"
+   }
+  ]
+ }
+}

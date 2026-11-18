@@ -414,7 +414,7 @@ def test_collect_pulp_disk_reads_storage(tmp_path: Path) -> None:
     assert result.free_bytes == 200
 
 
-def test_collect_pulp_disk_missing_storage_raises() -> None:
-    tmp = FIXTURES_DIR  # n'importe quel repertoire sans fixture pulp
+def test_collect_pulp_disk_missing_storage_raises(tmp_path: Path) -> None:
+    # Repertoire vide : aucune fixture pour /pulp/api/v3/status/.
     with pytest.raises(ApiError):
-        collect_pulp_disk(FixtureClient(tmp))
+        collect_pulp_disk(FixtureClient(tmp_path))
