@@ -25,6 +25,7 @@ from katello_inspector.analyze import (
     UPDATE_STATE_UP_TO_DATE,
     WARN,
     aggregate_status,
+    collect_unknown_entries,
     compute_build_indicator,
     compute_by_lce,
     compute_checkin_indicator,
@@ -33,12 +34,24 @@ from katello_inspector.analyze import (
     compute_errata_security_indicator,
     compute_fleet_summary,
     compute_host_indicators,
+    compute_ping_status,
     compute_profile_indicator,
+    compute_pulp_disk_status,
+    compute_tasks_status,
     compute_traces_indicator,
     compute_update_state,
     evaluate_host,
 )
-from katello_inspector.collect import ContentViewVersion, Host, HostContentViewPair, host_from_api
+from katello_inspector.collect import (
+    ContentViewVersion,
+    Host,
+    HostContentViewPair,
+    PingResult,
+    PulpDisk,
+    RecentTaskFailures,
+    TaskSummary,
+    host_from_api,
+)
 from katello_inspector.config import build_config
 
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
@@ -740,3 +753,82 @@ def test_compute_by_lce_security_critical_total_is_always_none() -> None:
     evaluated = [evaluate_host(host, {}, config, now=NOW)]
     by_lce = compute_by_lce(evaluated, ["Library", "Staging", "Production"])
     assert all(s.security_critical_total is None for s in by_lce)
+
+
+# --------------------------------------------------------------------------
+# Indicateurs de plateforme
+# --------------------------------------------------------------------------
+
+
+def test_ping_status_all_ok() -> None:
+    assert compute_ping_status(PingResult(services={"candlepin": "ok", "pulp3": "ok"})) == OK
+
+
+def test_ping_status_one_service_down_is_crit() -> None:
+    assert compute_ping_status(PingResult(services={"candlepin": "ok", "pulp3": "down"})) == CRIT
+
+
+def test_tasks_status_empty_is_ok() -> None:
+    assert compute_tasks_status(RecentTaskFailures(total=0, tasks=[], omitted=0)) == OK
+
+
+def test_tasks_status_non_sync_label_is_warn() -> None:
+    summary = TaskSummary(
+        label="Actions::RemoteExecution::RunHostJob", state="stopped", result="error", started_at=None
+    )
+    tasks = RecentTaskFailures(total=1, tasks=[summary], omitted=0)
+    assert compute_tasks_status(tasks) == WARN
+
+
+def test_tasks_status_sync_label_is_crit() -> None:
+    summary = TaskSummary(label="Actions::Katello::Repository::Sync", state="stopped", result="error", started_at=None)
+    tasks = RecentTaskFailures(total=1, tasks=[summary], omitted=0)
+    assert compute_tasks_status(tasks) == CRIT
+
+
+def test_tasks_status_sync_plan_run_is_crit() -> None:
+    tasks = RecentTaskFailures(
+        total=1,
+        tasks=[TaskSummary(label="Actions::Katello::SyncPlan::Run", state="stopped", result="error", started_at=None)],
+        omitted=0,
+    )
+    assert compute_tasks_status(tasks) == CRIT
+
+
+def test_pulp_disk_status_ok() -> None:
+    disk = PulpDisk(total_bytes=100, used_bytes=10, free_bytes=90)  # 90% libre
+    assert compute_pulp_disk_status(disk, _config()) == OK
+
+
+def test_pulp_disk_status_warn_at_threshold() -> None:
+    disk = PulpDisk(total_bytes=100, used_bytes=81, free_bytes=19)  # 19% libre, seuil WARN=20
+    assert compute_pulp_disk_status(disk, _config()) == WARN
+
+
+def test_pulp_disk_status_crit_at_threshold() -> None:
+    disk = PulpDisk(total_bytes=100, used_bytes=91, free_bytes=9)  # 9% libre, seuil CRIT=10
+    assert compute_pulp_disk_status(disk, _config()) == CRIT
+
+
+# --------------------------------------------------------------------------
+# collect_unknown_entries : deduplication
+# --------------------------------------------------------------------------
+
+
+def test_collect_unknown_entries_deduplicates_profile_across_many_hosts() -> None:
+    config = _config()
+    hosts = [host_from_api(_raw_host(i)) for i in range(5) if i != 10]
+    evaluated = [evaluate_host(h, {}, config, now=NOW) for h in hosts]
+    entries = collect_unknown_entries(evaluated)
+    profile_entries = [e for e in entries if e["indicator"] == "profile"]
+    assert len(profile_entries) == 1
+
+
+def test_collect_unknown_entries_excludes_na_and_non_unknown() -> None:
+    config = _config()
+    raw = _raw_host(0)
+    raw["subscription_facet_attributes"]["last_checkin"] = "2026-11-17 11:00:00 UTC"  # OK, pas d'entree
+    host = host_from_api(raw)
+    evaluated = [evaluate_host(host, {}, config, now=NOW)]
+    entries = collect_unknown_entries(evaluated)
+    assert all(e["indicator"] != "checkin" for e in entries)

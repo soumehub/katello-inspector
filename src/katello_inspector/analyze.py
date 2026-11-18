@@ -12,7 +12,15 @@ import datetime as dt
 from dataclasses import dataclass, field
 
 from . import config as config_mod
-from .collect import ContentViewVersion, Host, HostContentViewPair
+from .collect import (
+    CRIT_TASK_LABELS,
+    ContentViewVersion,
+    Host,
+    HostContentViewPair,
+    PingResult,
+    PulpDisk,
+    RecentTaskFailures,
+)
 
 OK = "OK"
 WARN = "WARN"
@@ -444,3 +452,71 @@ def compute_by_lce(evaluated_hosts: list[EvaluatedHost], environment_order: list
             )
         )
     return summaries
+
+
+# --------------------------------------------------------------------------
+# Indicateurs de plateforme (ping, taches, disque Pulp)
+# --------------------------------------------------------------------------
+
+
+def compute_ping_status(ping: PingResult) -> str:
+    if any(status != "ok" for status in ping.services.values()):
+        return CRIT
+    return OK
+
+
+def compute_tasks_status(tasks: RecentTaskFailures) -> str:
+    if any(t.label in CRIT_TASK_LABELS for t in tasks.tasks):
+        return CRIT
+    if tasks.total > 0:
+        return WARN
+    return OK
+
+
+def compute_pulp_disk_free_pct(disk: PulpDisk) -> float:
+    if disk.total_bytes <= 0:
+        return 100.0
+    return disk.free_bytes / disk.total_bytes * 100
+
+
+def compute_pulp_disk_status(disk: PulpDisk, config: config_mod.Config) -> str:
+    free_pct = compute_pulp_disk_free_pct(disk)
+    crit = config_mod.threshold_for(config, "disk_crit_pct")
+    warn = config_mod.threshold_for(config, "disk_warn_pct")
+    if free_pct < crit:
+        return CRIT
+    if free_pct < warn:
+        return WARN
+    return OK
+
+
+def worst_of(statuses: list[str]) -> str:
+    """Pire statut parmi une liste non vide (CRIT > WARN > UNKNOWN > OK)."""
+    return min(statuses, key=lambda s: _SEVERITY_ORDER[s])
+
+
+# --------------------------------------------------------------------------
+# Liste "unknown" au niveau de la commande : informative, jamais consultee
+# pour decider un statut ou un code retour (voir cli.py/commands/).
+# --------------------------------------------------------------------------
+
+_HOST_INDICATOR_NAMES: tuple[str, ...] = ("checkin", "profile", "errata_security", "cv_lag", "traces", "build")
+
+
+def collect_unknown_entries(evaluated_hosts: list[EvaluatedHost]) -> list[dict[str, str]]:
+    """Raisons UNKNOWN deduplique a entre tous les hotes.
+
+    `profile` et `build` ont toujours le meme texte de raison : une seule
+    entree apparait, meme si des centaines de VM sont concernees (point 1).
+    """
+    seen: set[tuple[str, str]] = set()
+    entries: list[dict[str, str]] = []
+    for eh in evaluated_hosts:
+        for name in _HOST_INDICATOR_NAMES:
+            indicator: Indicator = getattr(eh.indicators, name)
+            if indicator.status == UNKNOWN and indicator.reason:
+                key = (name, indicator.reason)
+                if key not in seen:
+                    seen.add(key)
+                    entries.append({"indicator": name, "reason": indicator.reason})
+    return entries
