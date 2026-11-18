@@ -49,7 +49,7 @@ L'outil expose quatre sous-commandes, de la plus synthétique à la plus détail
 | Sous-commande | Rôle | Contenu |
 | --- | --- | --- |
 | `summary` | Santé globale, un écran | Compteurs plateforme (ping, tâches en erreur, disque Pulp) et compteurs parc : total, VMs par état de mise à jour, données obsolètes, errata security installables, reboot requis, environnements en retard de CV, VMs en build. Avec `--by-lce` : synthèse de conformité par Lifecycle Environment |
-| `list` | Tableau des VMs | Nom, LCE, CV et version déployée (une VM peut avoir plusieurs CV), dernier check-in, errata security installables, reboot, état de mise à jour, statut |
+| `list` | Tableau des VMs | Nom, LCE, CV et version déployée (une VM peut avoir plusieurs CV), dernier check-in, errata security installables, reboot, état de mise à jour, statut. En mode texte, une VM multi-CV n'affiche dans sa colonne CV que celle dont l'attente de promotion est la plus longue (`+N` pour les autres) ; le JSON liste toutes les CV. |
 | `content` | Cohérence du contenu | Par produit et repo : dernière sync et résultat ; par CV : dernière version publiée, version déployée par LCE et durée d'attente de la plus récente, contenu synchronisé non publié ; nombre de VMs par version |
 | `host NOM` | Détail d'une VM | Identité, fraîcheur des données, activation key, repos activés, errata disponibles, applicables et installables détaillés, paquets upgradables, traces, derniers jobs |
 | `version` | Version de l'outil | Version d'inspector et version de Foreman et de Katello, lues via l'API |

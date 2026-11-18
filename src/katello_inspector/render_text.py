@@ -94,6 +94,22 @@ def render_summary_text(data: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _primary_content_view(content_views: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Pour une VM multi-CV, la CV montree dans la colonne compacte du texte.
+
+    Celle dont l'attente de promotion (`waiting_days`) est la plus longue :
+    c'est la plus susceptible d'etre le probleme a regarder. A egalite (y
+    compris 0 partout), ordre alphabetique du nom pour rester deterministe
+    (`max` renvoie le premier maximum rencontre, d'ou le tri prealable). Le
+    detail complet des CV reste dans `content_views` en JSON ; cette regle
+    ne vaut que pour la colonne unique du mode texte.
+    """
+    if not content_views:
+        return None
+    ordered = sorted(content_views, key=lambda cv: cv.get("name") or "")
+    return max(ordered, key=lambda cv: cv.get("waiting_days") or 0)
+
+
 def render_list_text(hosts: list[dict[str, Any]], *, limit: int | None = None) -> str:
     header = ["Nom", "LCE", "CV (version)", "Check-in", "Sec.inst.", "Reboot", "A jour", "Statut"]
     widths = [22, 12, 32, 10, 10, 7, 7, 8]
@@ -102,9 +118,9 @@ def render_list_text(hosts: list[dict[str, Any]], *, limit: int | None = None) -
     shown = hosts if limit is None else hosts[:limit]
     for entry in shown:
         content_views = entry.get("content_views") or []
-        if content_views:
-            first = content_views[0]
-            cv_text = f"{first['name']} ({first['version_deployed']})"
+        primary = _primary_content_view(content_views)
+        if primary is not None:
+            cv_text = f"{primary['name']} ({primary['version_deployed']})"
             if len(content_views) > 1:
                 cv_text += f" (+{len(content_views) - 1})"
         else:
