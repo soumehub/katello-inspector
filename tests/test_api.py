@@ -110,36 +110,55 @@ def test_timeout_twice_raises_api_error() -> None:
     client = _client()
     opener = _ScriptedOpener([TimeoutError("delai depasse")])
     client._opener = opener
-    with pytest.raises(ApiError):
+    with pytest.raises(ApiError) as exc_info:
         client.get("/api/status")
     assert len(opener.calls) == 2
+    assert "delai depasse" in str(exc_info.value)
+    assert "urlopen error" not in str(exc_info.value)
+
+
+def test_url_error_wrapping_a_timeout_twice_raises_clear_message() -> None:
+    client = _client()
+    opener = _ScriptedOpener([urllib.error.URLError(TimeoutError("delai depasse"))])
+    client._opener = opener
+    with pytest.raises(ApiError) as exc_info:
+        client.get("/api/status")
+    assert len(opener.calls) == 2
+    assert "delai depasse" in str(exc_info.value)
+    assert "urlopen error" not in str(exc_info.value)
 
 
 def test_no_retry_on_connection_refused() -> None:
     client = _client()
     opener = _ScriptedOpener([urllib.error.URLError(ConnectionRefusedError("connexion refusee"))])
     client._opener = opener
-    with pytest.raises(ApiError):
+    with pytest.raises(ApiError) as exc_info:
         client.get("/api/status")
     assert len(opener.calls) == 1
+    assert "connexion refusee" in str(exc_info.value)
+    assert "urlopen error" not in str(exc_info.value)
 
 
 def test_no_retry_on_dns_failure() -> None:
     client = _client()
     opener = _ScriptedOpener([urllib.error.URLError(socket.gaierror("hote introuvable"))])
     client._opener = opener
-    with pytest.raises(ApiError):
+    with pytest.raises(ApiError) as exc_info:
         client.get("/api/status")
     assert len(opener.calls) == 1
+    assert "hote introuvable" in str(exc_info.value)
+    assert "urlopen error" not in str(exc_info.value)
 
 
 def test_no_retry_on_tls_certificate_error() -> None:
     client = _client()
     opener = _ScriptedOpener([urllib.error.URLError(ssl.SSLCertVerificationError("certificat invalide"))])
     client._opener = opener
-    with pytest.raises(ApiError):
+    with pytest.raises(ApiError) as exc_info:
         client.get("/api/status")
     assert len(opener.calls) == 1
+    assert "certificat invalide" in str(exc_info.value)
+    assert "urlopen error" not in str(exc_info.value)
 
 
 def test_retry_on_502() -> None:

@@ -45,6 +45,18 @@ def _is_retryable_network_error(exc: BaseException) -> bool:
     return isinstance(exc, _RETRYABLE_NETWORK_ERRORS)
 
 
+def _network_error_reason(exc: BaseException) -> str:
+    """Cause de l'echec reseau, sans l'habillage « <urlopen error ...> ».
+
+    urllib enveloppe la vraie cause (DNS, connexion refusee, certificat,
+    delai depasse) dans `URLError.reason` ; `str(URLError)` ne montre que
+    cet habillage, pas la cause elle-meme.
+    """
+    if isinstance(exc, urllib.error.URLError) and isinstance(exc.reason, BaseException):
+        return str(exc.reason)
+    return str(exc)
+
+
 class Response:
     """Reponse HTTP deja decodee en JSON."""
 
@@ -161,12 +173,13 @@ class BaseApiClient:
             try:
                 status, body = self._send(path, query, anonymous=anonymous)
             except OSError as exc:
+                reason = _network_error_reason(exc)
                 if not _is_retryable_network_error(exc):
-                    raise ApiError(f"erreur reseau sur {path} : {exc}") from exc
+                    raise ApiError(f"erreur reseau sur {path} : {reason}") from exc
                 last_exc = exc
                 if attempt == 1:
                     continue
-                raise ApiError(f"erreur reseau sur {path} : {exc}") from exc
+                raise ApiError(f"erreur reseau sur {path} : {reason}") from exc
             else:
                 text = body.decode("utf-8", "replace") if body else ""
                 if status < 400:
