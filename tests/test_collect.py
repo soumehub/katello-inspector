@@ -76,6 +76,18 @@ def test_build_search_single_filter() -> None:
     assert build_search(lce="Production") == 'lifecycle_environment = "Production"'
 
 
+def test_build_search_hostgroup_uses_plain_field_not_fullname() -> None:
+    # Verifie a la main sur une vraie instance : "hostgroup" trouve des
+    # hotes, "hostgroup_fullname"/"hostgroup_title" n'en trouvent aucun.
+    # --hostgroup prend donc le nom du groupe, pas son chemin complet.
+    assert build_search(hostgroup="Groupe") == 'hostgroup = "Groupe"'
+
+
+def test_build_search_hostgroup_escapes_quotes() -> None:
+    result = build_search(hostgroup='Groupe "Test"')
+    assert result == 'hostgroup = "Groupe \\"Test\\""'
+
+
 def test_build_search_combines_filters_with_and() -> None:
     result = build_search(lce="Production", cv="cv-os-rocky")
     assert result == 'lifecycle_environment = "Production" and content_view = "cv-os-rocky"'

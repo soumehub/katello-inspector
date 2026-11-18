@@ -63,11 +63,11 @@ def build_search(
 ) -> str | None:
     """Traduit les options de filtrage en expression de recherche Foreman.
 
-    Champs confirmes acceptes par /api/hosts (docs/api-findings.md, V2) :
-    `lifecycle_environment`, `content_view`. `hostgroup_fullname` n'est pas
-    confirme (non teste a la validation) : si l'API le rejette, le code
-    existant (UnsupportedSearchError) le traite comme une recherche non
-    supportee, jamais retentee.
+    Champs confirmes acceptes par /api/hosts : `lifecycle_environment`,
+    `content_view` (docs/api-findings.md, V2), et `hostgroup` (verifie a la
+    main : 7 hotes trouves, alors que `hostgroup_fullname` et
+    `hostgroup_title` n'en trouvent aucun). `--hostgroup` prend donc le nom
+    du groupe, jamais son chemin complet.
     """
     clauses: list[str] = []
     if lce:
@@ -75,7 +75,7 @@ def build_search(
     if cv:
         clauses.append(f'content_view = "{_escape_search_value(cv)}"')
     if hostgroup:
-        clauses.append(f'hostgroup_fullname = "{_escape_search_value(hostgroup)}"')
+        clauses.append(f'hostgroup = "{_escape_search_value(hostgroup)}"')
     if raw:
         # Parentheses uniquement quand --search se combine a un autre filtre,
         # pour que son propre "or" ne s'applique pas a tort aux autres clauses.

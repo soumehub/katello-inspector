@@ -15,8 +15,8 @@ Observés le 16 novembre 2026 avec un compte Viewer, en GET uniquement, sur une 
 - `thin=true` ne renvoie que id et name.
 
 ## Recherche sur /api/hosts
-- Acceptés : `last_checkin`, `errata_status`, `trace_status`, `build`, `lifecycle_environment`, `content_view`.
-- Rejeté : `subscription_status`.
+- Acceptés : `last_checkin`, `errata_status`, `trace_status`, `build`, `lifecycle_environment`, `content_view`, `hostgroup` (vérifié a posteriori, hors session de validation initiale : 7 hôtes trouvés avec le nom du groupe).
+- Rejeté : `subscription_status`. `hostgroup_fullname` et `hostgroup_title` sont acceptés par l'API (pas de 500) mais ne trouvent aucun hôte avec le nom seul du groupe : ils attendent vraisemblablement le chemin complet, pas testé plus avant. `--hostgroup` de l'outil utilise donc `hostgroup`, et prend le nom du groupe, pas son chemin.
 - Champ inconnu : **HTTP 500** avec « Field '…' not recognized for searching! » (ne pas retenter). Sur `/foreman_tasks/api/tasks` c'est un 400.
 - Une recherche acceptée prouve que le champ est reconnu, pas que la valeur testée est valide.
 
