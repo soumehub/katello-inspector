@@ -35,13 +35,14 @@ def build_envelope(
     data: Any,
     unknown: list[dict[str, str]],
     server_extra: dict[str, Any] | None = None,
+    thresholds: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     server: dict[str, Any] = {"url": config.url, "organization": config.organization}
     if config.insecure:
         server["tls_verified"] = False
     if server_extra:
         server.update(server_extra)
-    return {
+    envelope: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "tool": {"name": "katello-inspector", "version": __version__},
         "generated_at": now_iso(),
@@ -51,6 +52,9 @@ def build_envelope(
         "data": data,
         "unknown": unknown,
     }
+    if thresholds is not None:
+        envelope["thresholds"] = thresholds
+    return envelope
 
 
 def failure_envelope(message: str, *, command: str | None, server: dict[str, Any]) -> dict[str, Any]:
